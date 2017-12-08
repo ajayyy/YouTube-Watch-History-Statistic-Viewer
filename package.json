@@ -1,0 +1,16 @@
+{
+  "name": "youtube-wrapped",
+  "version": "1.0.0",
+  "description": "Youtube statistics about the past little while.",
+  "main": "test.js",
+  "dependencies": {
+    "google-auth-library": "^0.12.0",
+    "googleapis": "^23.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
