@@ -7,7 +7,9 @@
     "google-auth-library": "^0.12.0",
     "googleapis": "^23.0.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "electron-prebuilt": "^1.4.13"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
