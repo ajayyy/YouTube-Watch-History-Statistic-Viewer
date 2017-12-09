@@ -24,3 +24,8 @@ global.start = function(){
   mainWindow.loadURL(url.format({ pathname: path.join(__dirname,'getcookie.html'), protocol: 'file:'}));
 
 }
+
+global.scrape = function(){
+  mainWindow.loadURL(url.format({ pathname: path.join(__dirname,'scraping.html'), protocol: 'file:'}));
+
+}

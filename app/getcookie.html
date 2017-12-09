@@ -7,7 +7,7 @@
   <script type="text/javascript">
   console.log(document.getElementsByClassName("title").innerHTML + " s");
     let {remote} = require('electron');
-    const start = remote.getGlobal("start");
+    const scrape = remote.getGlobal("scrape");
   </script>
 </head>
 
@@ -23,7 +23,7 @@
     <br/>
     <br/>
 
-    <div class="bob" onclick="start(document)"> <div class="button" onclick="start()"> Submit! </div> </div>
+    <div class="bob" onclick="scrape(document)"> <div class="button" onclick="start()"> Submit! </div> </div>
 
     <h1 class="title">What is this?</h1>
 
