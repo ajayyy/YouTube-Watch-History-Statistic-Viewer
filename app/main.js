@@ -14,3 +14,10 @@ app.on('ready', function() {
 
     mainWindow.loadURL(url.format({ pathname: path.join(__dirname,'index.html'), protocol: 'file:'}));
 });
+
+global.start = function(){
+  console.log(" s");
+  let code = `  console.log(document.getElementsByClassName("title") + " s");`;
+  // mainWindow.webContents.executeJavaScript(code);
+
+}

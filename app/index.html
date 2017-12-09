@@ -3,6 +3,12 @@
   <link rel="stylesheet" type="text/css" href="styles.css">
   <link href="SourceSansPro-Regular.ttf" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Ranchers" rel="stylesheet">
+
+  <script type="text/javascript">
+  console.log(document.getElementsByClassName("title").innerHTML + " s");
+    let {remote} = require('electron');
+    const start = remote.getGlobal("start"); // <-- () this is important
+  </script>
 </head>
 
 <body>
@@ -11,7 +17,7 @@
   <h1 class="title">Welcome to the "2017 Wrapped" Statistics Viewer for YouTube</h1>
   <center>
 
-  <div class="bob"> <div class="button"> Let's Go! </div> </div>
+  <div class="bob" onclick="start(document)"> <div class="button" onclick="start()"> Let's Go! </div> </div>
 
 
 </body>
