@@ -16,8 +16,6 @@ app.on('ready', function() {
 });
 
 global.start = function(){
-  console.log(" s");
-  let code = `  console.log(document.getElementsByClassName("title") + " s");`;
-  // mainWindow.webContents.executeJavaScript(code);
+  mainWindow.loadURL(url.format({ pathname: path.join(__dirname,'getcookie.html'), protocol: 'file:'}));
 
 }

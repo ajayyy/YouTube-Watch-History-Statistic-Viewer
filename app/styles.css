@@ -12,6 +12,18 @@
   animation-iteration-count: infinite;*/
 }
 
+textarea {
+  background-color: white;
+  height: 30%;
+  width: 40%;
+  font-family: sans-serif;
+
+}
+
+#explination {
+  font-size: 30px;
+}
+
 @keyframes backgroundAnimation {
     0% {background-color: #14dec6;}
     20% {background-color: #20b5a3;}
