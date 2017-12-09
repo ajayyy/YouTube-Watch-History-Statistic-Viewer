@@ -1,6 +1,50 @@
 * {
   font-family: 'Source Sans Pro', sans-serif;
-  color: #202020
+  font-family: 'Ranchers', cursive;
+
+  color: #202020;
+  background-color: #cdcdcd;
+}
+
+*:not(div) {
+  /*animation-name: backgroundAnimation;
+  animation-duration: 3s;
+  animation-iteration-count: infinite;*/
+}
+
+@keyframes backgroundAnimation {
+    0% {background-color: #14dec6;}
+    20% {background-color: #20b5a3;}
+    40% {background-color: #4bcfbf;}
+    60% {background-color: #14c0de;}
+    80% {background-color: #14dea7;}
+    100% {background-color: #14dec6;}
+}
+
+.title {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  font-family: 'Ranchers', cursive;
+  color: #410dc1;
+  font-size: 50px;
+  animation-name: titleAnimation;
+  animation-duration: 7s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes titleAnimation {
+    0% {
+      color: #9a02bf;
+      transform: translate(0px, 0px) rotate(0deg);
+    }
+    50% {
+      color: #5d0ba6;
+      transform: translate(5px, 5px) rotate(1deg);
+    }
+    100% {
+      color: #9a02bf;
+      transform: translate(0px, 0px) rotate(0deg);
+    }
 }
 
 .button {
@@ -22,10 +66,22 @@
   animation-duration: 0.5s;
 }
 
+.bob {
+  animation-name: bobing;
+  animation-duration: 7s;
+  animation-iteration-count: infinite;
+}
+
 .button:hover {
   animation-name: grow;
   animation-duration: 0.5s;
   transform: scale(1.25);
+}
+
+@keyframes bobing {
+    0% {transform: translate(0px, 0px);}
+    50% {transform: translate(0px, 5px);}
+    100% {transform: translate(0px, 0px);}
 }
 
 @keyframes shrink {
