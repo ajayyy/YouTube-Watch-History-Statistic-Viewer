@@ -73,6 +73,7 @@ textarea {
 
   font-weight: bold;
   font-size: 25px;
+  text-decoration: none;
 
   text-align: center;
   align-content: center;
@@ -89,6 +90,7 @@ textarea {
 }
 
 .button:hover {
+  cursor: pointer;
   animation-name: grow;
   animation-duration: 0.5s;
   transform: scale(1.25);

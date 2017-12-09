@@ -13,6 +13,11 @@ app.on('ready', function() {
     });
 
     mainWindow.loadURL(url.format({ pathname: path.join(__dirname,'index.html'), protocol: 'file:'}));
+
+    mainWindow.webContents.on('new-window', function(e, url) {
+      e.preventDefault();
+      require('electron').shell.openExternal(url);
+    });
 });
 
 global.start = function(){
