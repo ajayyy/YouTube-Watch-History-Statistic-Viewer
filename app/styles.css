@@ -1,0 +1,39 @@
+* {
+  font-family: 'Source Sans Pro', sans-serif;
+  color: #202020
+}
+
+.button {
+  background: #325eb4;
+  border-radius: 90px 90px 90px 90px;
+  content: "";
+  height: 50px;
+  line-height: 50px;
+  width: 125px;
+
+  font-weight: bold;
+  font-size: 25px;
+
+  text-align: center;
+  align-content: center;
+
+  transform: scale(1);
+  animation-name: shrink;
+  animation-duration: 0.5s;
+}
+
+.button:hover {
+  animation-name: grow;
+  animation-duration: 0.5s;
+  transform: scale(1.25);
+}
+
+@keyframes shrink {
+    from {transform: scale(1.25);}
+    to {transform: scale(1);}
+}
+
+@keyframes grow {
+    from {transform: scale(1);}
+    to {transform: scale(1.25);}
+}
