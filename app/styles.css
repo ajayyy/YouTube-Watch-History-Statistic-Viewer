@@ -59,6 +59,10 @@ textarea {
     }
 }
 
+#thatsenough {
+    width: 250px;
+}
+
 .button {
   background: #325eb4;
   border-radius: 90px 90px 90px 90px;

@@ -1,0 +1,39 @@
+
+<head>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+  <link href="SourceSansPro-Regular.ttf" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Ranchers" rel="stylesheet">
+
+  <script type="text/javascript">
+  console.log(document.getElementsByClassName("title").innerHTML + " s");
+    let {remote} = require('electron');
+    const start = remote.getGlobal("start");
+  </script>
+</head>
+
+<body>
+
+  <center>
+    <h1 class="title">Downloading Watch History...</h1>
+
+    <div id="explination" class="bob">
+
+      Downloaded data for 0 videos so far.
+
+      <br/>
+      <br/>
+
+      The next page will load automatically when all videos are downloaded, however, if you want to end it early and just see statistics about the currently downloaded videos, hit the button before.
+
+      <br/>
+      <br/>
+
+    </div>
+
+
+    <div class="bob" onclick="start(document)"> <div id="thatsenough" class="button" onclick="start()"> That's enough, Let's Go! </div> </div>
+
+  </center>
+
+
+</body>
