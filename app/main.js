@@ -29,14 +29,10 @@ global.videosDownloaded = function() {
 var bufferData = "";
 
 process.on('exit', function () {
-  // var killer = require('child_process');
-  //
-  // killer=exec('taskkill /F /pid '+command.pid);
-  // command.kill();
-
-  // kill(command.pid);
-  var proc = require('child_process').spawn('mongod');
-proc.kill('SIGINT');
+  if (command != null){
+    var proc = require('child_process').spawn('mongod');
+    proc.kill('SIGINT');
+  }
 });
 
 function startScrape() {
@@ -54,6 +50,8 @@ function newScrapeMessage(data) {
   if(bufferData.contains("'time': ")){
     videosDownloaded ++;
     console.log(videosDownloaded);
+
+    mainWindow.webContents.executeJavaScript('updateVideoAmount();');
 
     bufferData = "";
   }

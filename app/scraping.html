@@ -8,9 +8,6 @@
     let {remote} = require('electron');
     const start = remote.getGlobal("start");
 
-    // while(true){
-    //    document.getElementById("amount").innerHTML = remote.getGlobal('videosDownloaded');
-    // }
   </script>
 </head>
 
@@ -21,7 +18,7 @@
 
     <div id="explination" class="bob">
 
-      Downloaded data for <div id=amount>0</div> videos so far.
+      Downloaded data for <div id="amount">0</div> videos so far.
 
       <br/>
       <br/>
@@ -37,6 +34,12 @@
     <div class="bob" onclick="start(document)"> <div id="thatsenough" class="button" onclick="start()"> That's enough, Let's Go! </div> </div>
 
   </center>
+
+  <script type="text/javascript">
+    function updateVideoAmount() {
+      document.getElementById("amount").innerHTML = remote.getGlobal('videosDownloaded')();
+    }
+  </script>
 
 
 </body>
