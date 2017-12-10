@@ -87,5 +87,5 @@ global.start = function(){
 }
 
 global.scrape = function() {
-  remote.getGlobal('mainWindow').loadURL(url.format({ pathname: path.join(__dirname,'scraping.html'), protocol: 'file:'}));
+  mainWindow.loadURL(url.format({ pathname: path.join(__dirname,'scraping.html'), protocol: 'file:'}));
 }

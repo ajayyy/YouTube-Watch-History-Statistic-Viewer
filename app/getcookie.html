@@ -20,9 +20,9 @@
 
       fs.writeFile("./youtube_cookies.json", document.getElementById("cookies").value, function(err) {
         console.log("The file was saved!");
+        remote.getGlobal('scrape')();
       });
 
-      remote.getGlobal('scrape')();
     }
   </script>
 </head>
