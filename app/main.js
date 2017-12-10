@@ -7,19 +7,50 @@ const url = require('url');
 const util = require('util');
 require('util.promisify').shim();
 
-const exec = util.promisify(require('child_process').exec);
+process.chdir('./Youtube-Watch-History-Scraper-master/');
 
-const { spawn } = require('child_process');
-// const child = spawn('scrapy', ['crawl', 'yth_spider']);
+const { spawn, exec } = require('child_process');
 const readline = require('readline');
-const child = spawn('ls');
+// const command = spawn('scrapy.exe', ['crawl', 'yth_spider'],  { stdio: 'inherit' });
+const command = null;
+// const child = spawn('ls');
 
-readline.createInterface({
-  input     : child.stdout,
-  terminal  : false
-}).on('line', function(line) {
-  console.log(line + " | ");
-});
+//make contains a method
+String.prototype.contains = function(it) { return this.indexOf(it) != -1; };
+
+var videosDownloaded = 0;
+
+var bufferData = "";
+
+function startScrape() {
+  command = exec('scrapy crawl yth_spider');
+
+  process.on('exit', function () {
+    a.kill();
+    b.kill();
+  });
+
+  command.stdout.on('data', newScrapeMessage);
+
+  command.stderr.on('data', newScrapeMessage);
+}
+
+function newScrapeMessage(data) {
+  bufferData += data.toString();
+  if(bufferData.contains("'time': ")){
+    videosDownloaded ++;
+    console.log(videosDownloaded);
+
+    bufferData = "";
+  }
+}
+
+// readline.createInterface({
+//   input     : child.stdout,
+//   terminal  : false
+// }).on('line', function(line) {
+//   console.log(line + " | ");
+// });
 
 // use child.stdout.setEncoding('utf8'); if you want text chunks
 // child.stdout.setEncoding('utf8');
@@ -31,9 +62,9 @@ readline.createInterface({
 // since these are streams, you can pipe them elsewhere
 // child.stderr.pipe(dest);
 
-child.on('close', (code) => {
-  console.log(`child process exited with code ${code}`);
-});
+// child.on('close', (code) => {
+//   console.log(`child process exited with code ${code}`);
+// });
 
 var mainWindow = null;
 
