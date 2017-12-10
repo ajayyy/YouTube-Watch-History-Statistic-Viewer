@@ -4,7 +4,6 @@ const {app, BrowserWindow} = require('electron');
 const path = require('path');
 const url = require('url');
 const fs = require('fs');
-const kill = require('tree-kill');
 
 var mainWindow = null
 
@@ -28,16 +27,9 @@ global.videosDownloaded = function() {
 
 var bufferData = "";
 
-process.on('exit', function () {
-  if (command != null){
-    var proc = require('child_process').spawn('mongod');
-    proc.kill('SIGINT');
-  }
-});
-
 function startScrape() {
   console.log("SADsadasdsadsad");
-  command = exec('scrapy crawl yth_spider');
+  command = spawn('scrapy', ['crawl', 'yth_spider']);
 
   command.stdout.on('data', newScrapeMessage);
 
@@ -51,7 +43,9 @@ function newScrapeMessage(data) {
     videosDownloaded ++;
     console.log(videosDownloaded);
 
-    mainWindow.webContents.executeJavaScript('updateVideoAmount();');
+    if(mainWindow !== null){ //will become null if someone closes the window and ends the program
+      mainWindow.webContents.executeJavaScript('updateVideoAmount();');
+    }
 
     bufferData = "";
   }
