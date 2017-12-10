@@ -7,7 +7,23 @@
   <script type="text/javascript">
   console.log(document.getElementsByClassName("title").innerHTML + " s");
     let {remote} = require('electron');
-    const scrape = remote.getGlobal("scrape");
+    const fs = remote.require('fs');
+    const url = remote.require('url');
+    const path = remote.require('path');
+
+
+    var doneCookies = false; //done submitting cookies
+
+    function scrape(){
+      if(doneCookies) return;
+      doneCookies = true;
+
+      fs.writeFile("./youtube_cookies.json", document.getElementById("cookies").value, function(err) {
+        console.log("The file was saved!");
+      });
+
+      remote.getGlobal('scrape')();
+    }
   </script>
 </head>
 
@@ -18,7 +34,7 @@
     <div class="bob">Please paste the cookie here</div>
     <br/>
 
-    <textarea type="text" > </textarea>
+    <textarea id="cookies" type="text" > </textarea>
 
     <br/>
     <br/>

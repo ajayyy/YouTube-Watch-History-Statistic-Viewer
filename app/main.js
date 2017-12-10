@@ -3,6 +3,9 @@
 const {app, BrowserWindow} = require('electron');
 const path = require('path');
 const url = require('url');
+const fs = require('fs');
+
+var mainWindow = null
 
 const util = require('util');
 require('util.promisify').shim();
@@ -11,9 +14,7 @@ process.chdir('./Youtube-Watch-History-Scraper-master/');
 
 const { spawn, exec } = require('child_process');
 const readline = require('readline');
-// const command = spawn('scrapy.exe', ['crawl', 'yth_spider'],  { stdio: 'inherit' });
 const command = null;
-// const child = spawn('ls');
 
 //make contains a method
 String.prototype.contains = function(it) { return this.indexOf(it) != -1; };
@@ -66,8 +67,6 @@ function newScrapeMessage(data) {
 //   console.log(`child process exited with code ${code}`);
 // });
 
-var mainWindow = null;
-
 app.on('ready', function() {
     mainWindow = new BrowserWindow({
         height: 600,
@@ -87,7 +86,6 @@ global.start = function(){
 
 }
 
-global.scrape = function(){
-  mainWindow.loadURL(url.format({ pathname: path.join(__dirname,'scraping.html'), protocol: 'file:'}));
-
+global.scrape = function() {
+  remote.getGlobal('mainWindow').loadURL(url.format({ pathname: path.join(__dirname,'scraping.html'), protocol: 'file:'}));
 }
