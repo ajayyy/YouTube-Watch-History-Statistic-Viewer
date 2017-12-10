@@ -6,6 +6,7 @@
   "dependencies": {
     "google-auth-library": "^0.12.0",
     "googleapis": "^23.0.0",
+    "tree-kill": "^1.2.0",
     "util.promisify": "^1.0.0"
   },
   "devDependencies": {

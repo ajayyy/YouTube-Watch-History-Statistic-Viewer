@@ -4,6 +4,7 @@ const {app, BrowserWindow} = require('electron');
 const path = require('path');
 const url = require('url');
 const fs = require('fs');
+const kill = require('tree-kill');
 
 var mainWindow = null
 
@@ -14,7 +15,7 @@ process.chdir('./Youtube-Watch-History-Scraper-master/');
 
 const { spawn, exec } = require('child_process');
 const readline = require('readline');
-const command = null;
+var command = null;
 
 //make contains a method
 String.prototype.contains = function(it) { return this.indexOf(it) != -1; };
@@ -27,13 +28,20 @@ global.videosDownloaded = function() {
 
 var bufferData = "";
 
-function startScrape() {
-  command = exec('scrapy crawl yth_spider');
+process.on('exit', function () {
+  // var killer = require('child_process');
+  //
+  // killer=exec('taskkill /F /pid '+command.pid);
+  // command.kill();
 
-  process.on('exit', function () {
-    a.kill();
-    b.kill();
-  });
+  // kill(command.pid);
+  var proc = require('child_process').spawn('mongod');
+proc.kill('SIGINT');
+});
+
+function startScrape() {
+  console.log("SADsadasdsadsad");
+  command = exec('scrapy crawl yth_spider');
 
   command.stdout.on('data', newScrapeMessage);
 
@@ -41,6 +49,7 @@ function startScrape() {
 }
 
 function newScrapeMessage(data) {
+  console.log("SADsadasdsadsad");
   bufferData += data.toString();
   if(bufferData.contains("'time': ")){
     videosDownloaded ++;
@@ -48,6 +57,8 @@ function newScrapeMessage(data) {
 
     bufferData = "";
   }
+  console.log("rwerwerwerw");
+
 }
 
 // readline.createInterface({
