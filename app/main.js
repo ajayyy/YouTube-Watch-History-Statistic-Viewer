@@ -21,6 +21,10 @@ String.prototype.contains = function(it) { return this.indexOf(it) != -1; };
 
 var videosDownloaded = 0;
 
+global.videosDownloaded = function() {
+  return videosDownloaded;
+}
+
 var bufferData = "";
 
 function startScrape() {
@@ -88,4 +92,6 @@ global.start = function(){
 
 global.scrape = function() {
   mainWindow.loadURL(url.format({ pathname: path.join(__dirname,'scraping.html'), protocol: 'file:'}));
+
+  startScrape();
 }
