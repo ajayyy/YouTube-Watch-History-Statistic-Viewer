@@ -32,16 +32,49 @@ function authorize(credentials, callback) {
   var clientId = credentials.installed.client_id;
   var redirectUrl = credentials.installed.redirect_uris[0];
   var auth = new googleAuth();
+
+  authFactory.getApplicationDefault(function(err, authClient) {
+    if (err) {
+      console.log('Authentication failed because of ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      // TODO: Change placeholders below to values for parameters to the 'get' method:
+
+      // Identifies the project addressed by this request.
+      project: "",
+      // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+      managedZone: "",
+      // The identifier of the requested change, from a previous ResourceRecordSetsChangeResponse.
+      changeId: "",
+      // Auth client
+      auth: authClient
+    };
+
+    dns.changes.get(request, function(err, result) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(result);
+      }
+    });
+  });
+
   var oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
 
   // Check if we have previously stored a token.
   fs.readFile(TOKEN_PATH, function(err, token) {
-    if (err) {
-      getNewToken(oauth2Client, callback);
-    } else {
-      oauth2Client.credentials = JSON.parse(token);
+    // if (err) {
+    //   getNewToken(oauth2Client, callback);
+    // } else {
+      // oauth2Client.credentials = JSON.parse(token);
       callback(oauth2Client);
-    }
+    // }
   });
 }
 
@@ -107,8 +140,8 @@ function getChannel(auth) {
   //                    &type=video
   service.channels.list({
     auth: auth,
-    part: 'contentDetails,statistics',
-    mine: 'true'
+    part: 'snippets',
+    'id': 'UC_x5XG1OV2P6uZZ5FSM9Ttw'
     // order: 'viewCount',
     // type: 'video'
   }, function(err, response) {
@@ -122,31 +155,6 @@ function getChannel(auth) {
     } else {
 
       //get details of the playlist
-      console.log(playlist[0].contentDetails.relatedPlaylists.watchHistory);
-      service.playlistItems.list({
-        auth: auth,
-        part: 'snippet',
-        playlistId: playlist[0].contentDetails.relatedPlaylists.watchHistory
-        // order: 'viewCount',
-        // type: 'video'
-      }, function(err, response) {
-        if (err) {
-          console.log('The API returned an error: ' + err);
-          return;
-        }
-        var videos = response.items;
-        if (videos.length == 0) {
-          console.log('No channel found.');
-        } else {
-          for(var i=0;i<videos.length;i++){
-            console.log('This channel\'s ID is %s. Its title is \'%s\', and ' +
-                        'it has %s views.',
-                        playlist[i].id,
-                        playlist[i].snippet.title);
-          }
-        }
-
-      });
 
       console.log('This channel\'s ID is %s. Its title is \'%s\', and ' +
                   'it has %s views.',
