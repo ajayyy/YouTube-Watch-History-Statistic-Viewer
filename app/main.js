@@ -1,8 +1,39 @@
 'use strict';
 
-const {app, BrowserWindow} = require('electron')
-const path = require('path')
+const {app, BrowserWindow} = require('electron');
+const path = require('path');
 const url = require('url');
+
+const util = require('util');
+require('util.promisify').shim();
+
+const exec = util.promisify(require('child_process').exec);
+
+const { spawn } = require('child_process');
+// const child = spawn('scrapy', ['crawl', 'yth_spider']);
+const readline = require('readline');
+const child = spawn('ls');
+
+readline.createInterface({
+  input     : child.stdout,
+  terminal  : false
+}).on('line', function(line) {
+  console.log(line + " | ");
+});
+
+// use child.stdout.setEncoding('utf8'); if you want text chunks
+// child.stdout.setEncoding('utf8');
+// child.stdout.on('data', (chunk) => {
+//   // data from standard output is here as buffers
+//   console.log(chunk + " | ");
+// });
+
+// since these are streams, you can pipe them elsewhere
+// child.stderr.pipe(dest);
+
+child.on('close', (code) => {
+  console.log(`child process exited with code ${code}`);
+});
 
 var mainWindow = null;
 
