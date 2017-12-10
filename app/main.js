@@ -53,32 +53,15 @@ function newScrapeMessage(data) {
 
 }
 
-// readline.createInterface({
-//   input     : child.stdout,
-//   terminal  : false
-// }).on('line', function(line) {
-//   console.log(line + " | ");
-// });
-
-// use child.stdout.setEncoding('utf8'); if you want text chunks
-// child.stdout.setEncoding('utf8');
-// child.stdout.on('data', (chunk) => {
-//   // data from standard output is here as buffers
-//   console.log(chunk + " | ");
-// });
-
-// since these are streams, you can pipe them elsewhere
-// child.stderr.pipe(dest);
-
-// child.on('close', (code) => {
-//   console.log(`child process exited with code ${code}`);
-// });
-
 app.on('ready', function() {
     mainWindow = new BrowserWindow({
         height: 600,
         width: 800
     });
+
+    mainWindow.on('closed', function () {
+      mainWindow = null; //make it null because it is destroyed
+    })
 
     mainWindow.loadURL(url.format({ pathname: path.join(__dirname,'index.html'), protocol: 'file:'}));
 
@@ -97,4 +80,8 @@ global.scrape = function() {
   mainWindow.loadURL(url.format({ pathname: path.join(__dirname,'scraping.html'), protocol: 'file:'}));
 
   startScrape();
+}
+
+global.startStatisticsView = function() {
+  
 }
