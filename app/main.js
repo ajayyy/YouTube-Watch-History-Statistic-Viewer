@@ -34,6 +34,11 @@ function startScrape() {
   command.stdout.on('data', newScrapeMessage);
 
   command.stderr.on('data', newScrapeMessage);
+
+  child.on('close', (code) => {
+    global.startStatisticsView();
+  });
+
 }
 
 function newScrapeMessage(data) {
@@ -83,5 +88,14 @@ global.scrape = function() {
 }
 
 global.startStatisticsView = function() {
-  
+
+  if(command !== null){
+    command.kill();
+  }
+
+  mainWindow.loadURL(url.format({ pathname: path.join(__dirname,'statistics.html'), protocol: 'file:'}));
+}
+
+global.print = function(message){
+  console.log(message);
 }

@@ -6,7 +6,7 @@
 
   <script type="text/javascript">
     let {remote} = require('electron');
-    const start = remote.getGlobal("start");
+    const startStatisticsView = remote.getGlobal("startStatisticsView");
 
   </script>
 </head>
@@ -39,7 +39,7 @@
     </div>
 
 
-    <div class="bob" onclick="start(document)"> <div id="thatsenough" class="button" onclick="start()"> That's enough, Let's Go! </div> </div>
+    <div class="bob" onclick="start(document)"> <div id="thatsenough" class="button" onclick="startStatisticsView()"> That's enough, Let's Go! </div> </div>
 
   </center>
 

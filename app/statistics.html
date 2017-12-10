@@ -9,11 +9,14 @@
     let {remote} = require('electron');
     const start = remote.getGlobal("start");
   </script>
+
+  <script type='text/javascript' src="database_reading.js"></script>
+
 </head>
 
 <body>
 
-  <h1 class="title">In the last <div id="vidAmount" style="display:inline-block" class="title">20912</div> videos...</h1>
+  <h1 class="title">In the last <div id="vidAmount" style="display:inline-block" class="title">LOADING...</div> videos...</h1>
 
   <br/>
   <br/>
@@ -27,9 +30,9 @@
     <br/>
     <br/>
 
-    <div id="topvideo" style="display:inline-block">BLANK</div>
+    <div id="topvideo" style="display:inline-block">LOADING...</div>
 
-    <div style="display:inline-block; position: absolute; right: 10px;"> <div id="topchannel" style="display:inline-block">BLANK</div> </div>
+    <div style="display:inline-block; position: absolute; right: 10px;"> <div id="topchannel" style="display:inline-block">LOADING...</div> </div>
 
   </div>
 
@@ -41,7 +44,7 @@
 
       Top Category:
 
-      <div id="topcategory" style="display:inline-block">BLANK</div>
+      <div id="topcategory" style="display:inline-block">LOADING...</div>
 
     </div>
 
