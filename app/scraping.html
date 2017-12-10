@@ -18,6 +18,14 @@
 
     <div id="explination" class="bob">
 
+      <div id="connecting">
+         Connecting to Youtube...
+
+         <br/>
+         <br/>
+
+      </div>
+
       Downloaded data for <div id="amount">0</div> videos so far.
 
       <br/>
@@ -37,7 +45,14 @@
 
   <script type="text/javascript">
     function updateVideoAmount() {
-      document.getElementById("amount").innerHTML = remote.getGlobal('videosDownloaded')();
+
+      var videosDownloaded = remote.getGlobal('videosDownloaded')();
+
+      if(videosDownloaded !== 0){
+        document.getElementById("connecting").innerHTML = "";
+      }
+
+      document.getElementById("amount").innerHTML = videosDownloaded;
     }
   </script>
 
