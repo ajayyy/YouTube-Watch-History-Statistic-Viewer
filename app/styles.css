@@ -1,9 +1,9 @@
-* {
+body {
   font-family: 'Source Sans Pro', sans-serif;
   font-family: 'Ranchers', cursive;
 
   color: #202020;
-  background-color: #cdcdcd;
+  background: linear-gradient(#39bff1, #237390);
 }
 
 *:not(div) {

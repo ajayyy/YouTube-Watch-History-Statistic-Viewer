@@ -1,0 +1,36 @@
+
+<head>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+  <link href="SourceSansPro-Regular.ttf" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Ranchers" rel="stylesheet">
+
+  <script type="text/javascript">
+  console.log(document.getElementsByClassName("title").innerHTML + " s");
+    let {remote} = require('electron');
+    const start = remote.getGlobal("start");
+  </script>
+</head>
+
+<body>
+
+  <h1 class="title">In the last <div id="vidAmount" style="display:inline-block" class="title">20912</div> videos...</h1>
+
+  <br/>
+  <br/>
+
+  <div class="bob" id="explination">
+
+     <div id="topvideo" style="display:inline-block">BLANK</div> was your most watched video
+
+     <div style="display:inline-block; position: absolute; right: 10px;"> <div id="topchannel" style="display:inline-block">BLANK</div> was your most watched channel</div>
+
+  </div>
+
+  <center>
+
+    <!-- <div class="bob" onclick="start(document)"> <div class="button" onclick="start()"> Let's Go! </div> </div> -->
+
+  </center>
+
+
+</body>
