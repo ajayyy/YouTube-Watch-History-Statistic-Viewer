@@ -15,10 +15,10 @@ var readDatabase = function(){
   String.prototype.contains = function(it) { return this.indexOf(it) != -1; };
 
 
-  var smallVideoList = new Array(25);
+  var smallVideoList = [];
   var smallVideoListIndex = 0;
 
-  var smallChannelList = new Array(25);
+  var smallChannelList = [];
   var smallChannelListIndex = 0;
 
   let db = new sqlite3.Database('./youtube_history.db', sqlite3.OPEN_READONLY, (err) => {
@@ -85,8 +85,8 @@ var readDatabase = function(){
 
 
 
-          if(index + 1 >= smallVideoList.length){
-            for(var i=0;i<smallVideoList.length;i++){
+          if(smallVideoList.length >= 25){
+            for(var i=0;i<25;i++){
               if(document.getElementById("videolist").innerHTML === "LOADING..."){
                 document.getElementById("videolist").innerHTML = "";
               }
@@ -161,8 +161,8 @@ var readDatabase = function(){
 
           smallChannelList[index] = "<img style=\"margin-right: 10px;\" src=\"" + channel[0].snippet.thumbnails.default.url + "\"/>           " + channel[0].snippet.title + "<br/>";
 
-          if(index + 1 >= smallChannelList.length){
-            for(var i=0;i<smallChannelList.length;i++){
+          if(smallChannelList.length >= 25){
+            for(var i=0;i<25;i++){
               if(document.getElementById("channellist").innerHTML === "LOADING..."){
                 document.getElementById("channellist").innerHTML = "";
               }
