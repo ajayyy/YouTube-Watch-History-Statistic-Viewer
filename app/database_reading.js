@@ -24,7 +24,7 @@ db.serialize(() => {
     document.getElementById("vidAmount").innerHTML = row.totalCount;
   });
 
-  db.each(`SELECT title, COUNT(title) as totalCount
+  db.each(`SELECT title, author_id, COUNT(title) as totalCount
           FROM videoshistory
           GROUP BY title
           ORDER BY totalCount DESC
@@ -33,7 +33,7 @@ db.serialize(() => {
       print(err.message);
     }
     print(row.title)
-    document.getElementById("topvideo").innerHTML = row.title;
+    document.getElementById("topvideo").innerHTML = row.title + " by " + row.author_id;
   });
 
   db.each(`SELECT author_id, COUNT(author_id) as totalCount

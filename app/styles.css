@@ -46,15 +46,15 @@ textarea {
 
 @keyframes titleAnimation {
     0% {
-      color: #ff0000;
+      color: #e00000;
       transform: translate(0px, 0px) rotate(0deg);
     }
     50% {
-      color: #a60303;
+      color: #be0404;
       transform: translate(5px, 5px) rotate(1deg);
     }
     100% {
-      color: #ff0000;
+      color: #e00000;
       transform: translate(0px, 0px) rotate(0deg);
     }
 }
