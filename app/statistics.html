@@ -4,12 +4,6 @@
   <link href="SourceSansPro-Regular.ttf" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Ranchers" rel="stylesheet">
 
-  <script type="text/javascript">
-  console.log(document.getElementsByClassName("title").innerHTML + " s");
-    let {remote} = require('electron');
-    const start = remote.getGlobal("start");
-  </script>
-
 </head>
 
 <body>
@@ -56,7 +50,12 @@
 
   </center>
 
-  <script type='text/javascript' src="database_reading.js" ></script>
-
 
 </body>
+
+<script type="text/javascript">
+  let {remote} = require('electron');
+  const start = remote.getGlobal("start");
+</script>
+
+<script type='text/javascript' src="database_reading.js" ></script>
