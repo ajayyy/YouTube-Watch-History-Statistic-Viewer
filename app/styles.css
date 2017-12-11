@@ -67,6 +67,13 @@ textarea {
     width: 250px;
 }
 
+#excludemusic {
+  width: 200px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 20px;
+}
+
 .button {
   background: #325eb4;
   border-radius: 90px 90px 90px 90px;
