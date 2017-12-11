@@ -20,6 +20,7 @@ var readDatabase = function(){
 
   var smallChannelList = [];
   var smallChannelListIndex = 0;
+  var startedChannelReadout = false;
 
   let db = new sqlite3.Database('./youtube_history.db', sqlite3.OPEN_READONLY, (err) => {
     if (err) {
@@ -91,7 +92,7 @@ var readDatabase = function(){
                 document.getElementById("videolist").innerHTML = "";
               }
 
-              document.getElementById("videolist").innerHTML += smallVideoList[i];
+              document.getElementById("videolist").innerHTML += smallVideoList[i].replace("undefined", "");
             }
           }
         }
@@ -161,13 +162,14 @@ var readDatabase = function(){
 
           smallChannelList[index] = "<img style=\"margin-right: 10px;\" src=\"" + channel[0].snippet.thumbnails.default.url + "\"/>           " + channel[0].snippet.title + "<br/>";
 
-          if(smallChannelList.length >= 25){
+          if(smallChannelList.length >= 25 && !startedChannelReadout){
+            startedChannelReadout = true;
             for(var i=0;i<25;i++){
               if(document.getElementById("channellist").innerHTML === "LOADING..."){
                 document.getElementById("channellist").innerHTML = "";
               }
 
-              document.getElementById("channellist").innerHTML += smallChannelList[i];
+              document.getElementById("channellist").innerHTML += smallChannelList[i].replace("undefined", "");
             }
           }
 
