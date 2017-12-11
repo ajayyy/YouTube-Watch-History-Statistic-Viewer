@@ -18,6 +18,9 @@ var readDatabase = function(){
   var smallVideoList = new Array(25);
   var smallVideoListIndex = 0;
 
+  var smallChannelList = new Array(25);
+  var smallChannelListIndex = 0;
+
   let db = new sqlite3.Database('./youtube_history.db', sqlite3.OPEN_READONLY, (err) => {
     if (err) {
       console.error(err.message);
@@ -78,7 +81,9 @@ var readDatabase = function(){
           print('No video found.');
         } else {
 
-          smallVideoList[index] = videos[0].snippet.title + " by " + videos[0].snippet.channelTitle + "<br/> <center> <img style=\"margin-right: 10px;\" src=\"" + videos[0].snippet.thumbnails.default.url + "\"/> </center> ";
+          smallVideoList[index] = "<img style=\"margin-right: 10px;\" src=\"" + videos[0].snippet.thumbnails.default.url + "\"/>" + videos[0].snippet.title + " by " + videos[0].snippet.channelTitle + "<br/>";
+
+
 
           if(index + 1 >= smallVideoList.length){
             for(var i=0;i<smallVideoList.length;i++){
@@ -113,7 +118,7 @@ var readDatabase = function(){
       document.getElementById("topchannel").innerHTML = row.author_id;
       row.author_id = "/user/enyay";
 
-      let callback = function(response){
+      let callback = function(response, index){
         var channel = response.items;
         if (channel.length == 0) {
           print('No channel found.');
@@ -126,26 +131,75 @@ var readDatabase = function(){
         getChannelData({
             part: 'snippet',
             forUsername: row.author_id.replace("/user/", "")
-        }, callback);
+        }, callback, 0);
       }else{ //must be channel id
         getChannelData({
             part: 'snippet',
             id: row.author_id.replace("/channel/", "")
-        }, callback);
+        }, callback, 0);
       }
+
+    });
+
+    db.each(`SELECT author_id, COUNT(author_id) as totalCount
+            FROM videoshistory
+            GROUP BY author_id
+            ORDER BY totalCount DESC
+            LIMIT 25;`, (err, row) => {
+      if (err) {
+        print(err.message);
+      }
+      print(row.title)
+      document.getElementById("topchannel").innerHTML = row.author_id;
+      // row.author_id = "/user/enyay";
+
+      let callback = function(response, index){
+        var channel = response.items;
+        if (channel.length == 0) {
+          print('No channel found.');
+        } else {
+
+          smallChannelList[index] = "<img style=\"margin-right: 10px;\" src=\"" + channel[0].snippet.thumbnails.default.url + "\"/>           " + channel[0].snippet.title + "<br/>";
+
+          if(index + 1 >= smallChannelList.length){
+            for(var i=0;i<smallChannelList.length;i++){
+              if(document.getElementById("channellist").innerHTML === "LOADING..."){
+                document.getElementById("channellist").innerHTML = "";
+              }
+
+              document.getElementById("channellist").innerHTML += smallChannelList[i];
+            }
+          }
+
+        }
+      }
+
+      if(row.author_id.contains("/user/")){
+        getChannelData({
+            part: 'snippet',
+            forUsername: row.author_id.replace("/user/", "")
+        }, callback, smallChannelListIndex);
+      }else{ //must be channel id
+        getChannelData({
+            part: 'snippet',
+            id: row.author_id.replace("/channel/", "")
+        }, callback, smallChannelListIndex);
+      }
+
+      smallChannelListIndex++;
 
     });
 
   });
 
-  function getChannelData(params, callback){
+  function getChannelData(params, callback, index){
 
     youtube.channels.list(params, function(err, response) {
       if (err) {
         print('The API returned an error: ' + err);
         return;
       }
-      callback(response)
+      callback(response, index)
     });
   }
 
