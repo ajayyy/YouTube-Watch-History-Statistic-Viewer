@@ -15,6 +15,9 @@ var readDatabase = function(){
   String.prototype.contains = function(it) { return this.indexOf(it) != -1; };
 
 
+  var smallVideoList = new Array(25);
+  var smallVideoListIndex = 0;
+
   let db = new sqlite3.Database('./youtube_history.db', sqlite3.OPEN_READONLY, (err) => {
     if (err) {
       console.error(err.message);
@@ -44,7 +47,7 @@ var readDatabase = function(){
       print(row.title)
       document.getElementById("topvideo").innerHTML = row.title + " by " + row.author_id;
 
-      let callback = function(response){
+      let callback = function(response, index){
         var videos = response.items;
         if (videos.length == 0) {
           print('No video found.');
@@ -56,7 +59,45 @@ var readDatabase = function(){
       getVideoData({
           part: 'snippet',
           id: row.vid.replace("/watch?v=", "")
-      }, callback);
+      }, callback, 0);
+
+    });
+
+    db.each(`SELECT vid, COUNT(title) as totalCount
+            FROM videoshistory
+            GROUP BY title
+            ORDER BY totalCount DESC
+            LIMIT 25;`, (err, row) => {
+      if (err) {
+        print(err.message);
+      }
+
+      let callback = function(response, index){
+        var videos = response.items;
+        if (videos.length == 0) {
+          print('No video found.');
+        } else {
+
+          smallVideoList[index] = videos[0].snippet.title + " by " + videos[0].snippet.channelTitle + "<br/> <center> <img style=\"margin-right: 10px;\" src=\"" + videos[0].snippet.thumbnails.default.url + "\"/> </center> ";
+
+          if(index + 1 >= smallVideoList.length){
+            for(var i=0;i<smallVideoList.length;i++){
+              if(document.getElementById("videolist").innerHTML === "LOADING..."){
+                document.getElementById("videolist").innerHTML = "";
+              }
+
+              document.getElementById("videolist").innerHTML += smallVideoList[i];
+            }
+          }
+        }
+      }
+
+      getVideoData({
+          part: 'snippet',
+          id: row.vid.replace("/watch?v=", "")
+      }, callback, smallVideoListIndex);
+
+      smallVideoListIndex++;
 
     });
 
@@ -108,14 +149,14 @@ var readDatabase = function(){
     });
   }
 
-  function getVideoData(params, callback){
+  function getVideoData(params, callback, index){
 
     youtube.videos.list(params, function(err, response) {
       if (err) {
         print('The API returned an error: ' + err);
         return;
       }
-      callback(response)
+      callback(response, index)
     });
   }
 }

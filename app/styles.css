@@ -24,6 +24,10 @@ textarea {
   font-size: 30px;
 }
 
+.list {
+  font-size: 20px;
+}
+
 @keyframes backgroundAnimation {
     0% {background-color: #14dec6;}
     20% {background-color: #20b5a3;}
