@@ -133,7 +133,7 @@ var readDatabase = function(){
         if (channel.length == 0) {
           print('No channel found.');
         } else {
-          document.getElementById("topchannel").innerHTML = "<img style=\"margin-right: 10px;\" src=\"" + channel[0].snippet.thumbnails.default.url + "\"/>           " + channel[0].snippet.title;
+          document.getElementById("topchannel").innerHTML = "<img style=\"margin-right: 10px;\" src=\"" + channel[0].snippet.thumbnails.default.url + "\"/> <p style=\"display:inline-block;\">" + channel[0].snippet.title + "<br/> Watched " + row.totalCount + " videos </p>";
         }
       }
 
@@ -141,7 +141,7 @@ var readDatabase = function(){
         getChannelData({
             part: 'snippet',
             forUsername: row.author_id.replace("/user/", "")
-        }, callback, 0);
+        }, callback, 0, row);
       }else{ //must be channel id
         getChannelData({
             part: 'snippet',
@@ -169,7 +169,7 @@ var readDatabase = function(){
           print('No channel found.');
         } else {
 
-          smallChannelList[index] = "<img style=\"margin-right: 10px;\" src=\"" + channel[0].snippet.thumbnails.default.url + "\"/>           " + channel[0].snippet.title + "<br/>";
+          smallChannelList[index] = "<img style=\"margin-right: 10px;\" src=\"" + channel[0].snippet.thumbnails.default.url + "\"/> <p style=\"display:inline-block;\">" + channel[0].snippet.title + "<br/> Watched " + row.totalCount + " videos </p> <br/>";
 
           smallChannelListLoadedAmount++;
 
