@@ -1,23 +1,31 @@
 
+var sqlite3 = null;
+
+var google = null;
+var youtube = null;
+
+var print = remote.getGlobal("print");
+
 
 var readDatabase = function(){
 
-  const sqlite3 = remote.require('sqlite3').verbose();
+  sqlite3 = remote.require('sqlite3').verbose();
 
-  var google = require('googleapis');
-  var youtube = google.youtube({
+  google = require('googleapis');
+  youtube = google.youtube({
      version: 'v3',
      auth: "AIzaSyCbYxlw8o4YvE_9mA04oaBpxX9DIY_P2ac"
   });
 
-  const print = remote.getGlobal("print");
+  print = remote.getGlobal("print");
   //make contains a method
   String.prototype.contains = function(it) { return this.indexOf(it) != -1; };
 
 
   var smallVideoList = [];
+  var smallVideoListData = [];
   var smallVideoListIndex = 0;
-  var smalVideoListLoadedAmount = 0;
+  var smallVideoListLoadedAmount = 0;
 
   var smallChannelList = [];
   var smallChannelListIndex = 0;
@@ -82,12 +90,12 @@ var readDatabase = function(){
         if (videos.length == 0) {
           print('No video found.');
         } else {
-
+          print(videos[0].snippet.categoryId + " " + videos[0].snippet.title)
           smallVideoList[index] = "<img style=\"margin-right: 10px;\" src=\"" + videos[0].snippet.thumbnails.default.url + "\"/>" + videos[0].snippet.title + " by " + videos[0].snippet.channelTitle + "<br/>";
 
-          smalVideoListLoadedAmount++;
+          smallVideoListLoadedAmount++;
 
-          if(smalVideoListLoadedAmount >= 25){
+          if(smallVideoListLoadedAmount >= 25){
             for(var i=0;i<25;i++){
               if(document.getElementById("videolist").innerHTML === "LOADING..."){
                 document.getElementById("videolist").innerHTML = "";
@@ -196,29 +204,69 @@ var readDatabase = function(){
 
   });
 
-  function getChannelData(params, callback, index){
-
-    youtube.channels.list(params, function(err, response) {
-      if (err) {
-        print('The API returned an error: ' + err);
-        return;
-      }
-      callback(response, index)
-    });
-  }
-
-  function getVideoData(params, callback, index){
-
-    youtube.videos.list(params, function(err, response) {
-      if (err) {
-        print('The API returned an error: ' + err);
-        return;
-      }
-      callback(response, index)
-    });
-  }
 }
 
-// readDatabase();
-
 window.addEventListener("load", readDatabase);
+
+function excludeMusic(){
+  db.each(`SELECT vid, COUNT(title) as totalCount
+          FROM videoshistory
+          GROUP BY title
+          ORDER BY totalCount DESC;`, (err, row) => {
+    if (err) {
+      print(err.message);
+    }
+
+    let callback = function(response, index){
+      var videos = response.items;
+      if (videos.length == 0) {
+        print('No video found.');
+      } else {
+
+        smallVideoList[index] = "<img style=\"margin-right: 10px;\" src=\"" + videos[0].snippet.thumbnails.default.url + "\"/>" + videos[0].snippet.title + " by " + videos[0].snippet.channelTitle + "<br/>";
+
+        smallVideoListLoadedAmount++;
+
+        if(smallVideoListLoadedAmount >= 25){
+          for(var i=0;i<25;i++){
+            if(document.getElementById("videolist").innerHTML === "LOADING..."){
+              document.getElementById("videolist").innerHTML = "";
+            }
+
+            document.getElementById("videolist").innerHTML += smallVideoList[i].replace("undefined", "");
+          }
+        }
+      }
+    }
+
+    getVideoData({
+        part: 'snippet',
+        id: row.vid.replace("/watch?v=", "")
+    }, callback, smallVideoListIndex);
+
+    smallVideoListIndex++;
+
+  });
+}
+
+function getChannelData(params, callback, index){
+
+  youtube.channels.list(params, function(err, response) {
+    if (err) {
+      print('The API returned an error: ' + err);
+      return;
+    }
+    callback(response, index)
+  });
+}
+
+function getVideoData(params, callback, index){
+
+  youtube.videos.list(params, function(err, response) {
+    if (err) {
+      print('The API returned an error: ' + err);
+      return;
+    }
+    callback(response, index)
+  });
+}
