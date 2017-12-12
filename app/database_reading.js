@@ -65,7 +65,7 @@ var readDatabase = function(){
         if (videos.length == 0) {
           print('No video found.');
         } else {
-          document.getElementById("topvideo").innerHTML = videos[0].snippet.title + " by " + videos[0].snippet.channelTitle + "<br/> <center> <img style=\"margin-right: 10px;\" src=\"" + videos[0].snippet.thumbnails.medium.url + "\"/> </center>";
+          document.getElementById("topvideo").innerHTML = videos[0].snippet.title + " by " + videos[0].snippet.channelTitle + "<br/> <center> <img style=\"margin-right: 10px;\" src=\"" + videos[0].snippet.thumbnails.medium.url + "\"/> <br/> Watched " + row.totalCount + " times </center>";
         }
       }
 
