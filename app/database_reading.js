@@ -6,8 +6,25 @@ var youtube = null;
 
 var print = remote.getGlobal("print");
 
+var db = null;
+
+var fs = null;
+
+var categories = null;
+
+
 
 var readDatabase = function(){
+
+  fs = remote.require('fs');
+
+  fs.readFile('../app/youtube_categories.json', function processClientSecrets(err, content) {
+    if (err) {
+      print(err);
+      return;
+    }
+    categories = JSON.parse(content);
+  });
 
   sqlite3 = remote.require('sqlite3').verbose();
 
@@ -31,7 +48,9 @@ var readDatabase = function(){
   var smallChannelListIndex = 0;
   var smallChannelListLoadedAmount = 0;
 
-  let db = new sqlite3.Database('./youtube_history.db', sqlite3.OPEN_READONLY, (err) => {
+  var categoryList = [];
+
+  db = new sqlite3.Database('./youtube_history.db', sqlite3.OPEN_READONLY, (err) => {
     if (err) {
       console.error(err.message);
     }
@@ -67,6 +86,10 @@ var readDatabase = function(){
         } else {
           document.getElementById("topvideo").innerHTML = videos[0].snippet.title + " by " + videos[0].snippet.channelTitle + "<br/> <center> <img style=\"margin-right: 10px;\" src=\"" + videos[0].snippet.thumbnails.medium.url + "\"/> <br/> Watched " + row.totalCount + " times </center>";
         }
+      }
+
+      if(row.vid.contains("&")){
+        row.vid = row.vid.substring(0, row.vid.indexOf("&"));
       }
 
       getVideoData({
@@ -105,6 +128,10 @@ var readDatabase = function(){
             }
           }
         }
+      }
+
+      if(row.vid.contains("&")){
+        row.vid = row.vid.substring(0, row.vid.indexOf("&"));
       }
 
       getVideoData({
@@ -202,6 +229,70 @@ var readDatabase = function(){
 
     });
 
+    db.each(`SELECT author_id, COUNT(author_id) as totalCount
+            FROM videoshistory
+            GROUP BY author_id
+            ORDER BY totalCount DESC
+            LIMIT 7;`, (err, row) => {
+      if (err) {
+        print(err.message);
+      }
+
+      db.each(`SELECT vid, COUNT(title) as totalCount
+              FROM videoshistory
+              WHERE author_id='` + row.author_id + `'
+              GROUP BY title
+              ORDER BY totalCount DESC
+              LIMIT 1;`, (err, row) => {
+          if (err) {
+            print(err.message);
+          }
+
+          let callback = function(response, index, row){
+            var videos = response.items;
+            if (videos.length == 0) {
+              print('No video found.');
+            } else {
+              categoryList.push(getCategoryName(videos[0].snippet.categoryId));
+
+              if(categoryList.length >= 7){
+                //done adding them all
+                categoryList = categoryList.filter( function( item, index, inputArray ) {
+                    return inputArray.indexOf(item) == index;
+                });
+
+                var categories = "";
+
+                for(var i=0;i<categoryList.length;i++){
+                  if(i == categoryList.length - 1){
+                    categories += "and "
+                  }
+                  categories += categoryList[i] + ", ";
+                }
+
+                categories = categories.substring(0,categories.length - 2);
+
+                document.getElementById("topcategory").innerHTML = categories;
+
+              }
+
+            }
+          };
+
+          print(row.vid);
+
+          if(row.vid.contains("&")){
+            row.vid = row.vid.substring(0, row.vid.indexOf("&"));
+          }
+
+          getVideoData({
+              part: 'snippet',
+              id: row.vid.replace("/watch?v=", "")
+          }, callback, 0, row);
+
+      });
+    });
+
   });
 
 }
@@ -239,6 +330,10 @@ function excludeMusic(){
       }
     }
 
+    if(row.vid.contains("&")){
+      row.vid = row.vid.substring(0, row.vid.indexOf("&"));
+    }
+
     getVideoData({
         part: 'snippet',
         id: row.vid.replace("/watch?v=", "")
@@ -247,6 +342,15 @@ function excludeMusic(){
     smallVideoListIndex++;
 
   });
+}
+
+function getCategoryName(id){
+
+  for(var i=0;i<categories.items.length;i++){
+    if(categories.items[i].id === id){
+      return categories.items[i].snippet.title;
+    }
+  }
 }
 
 function getChannelData(params, callback, index, row){
