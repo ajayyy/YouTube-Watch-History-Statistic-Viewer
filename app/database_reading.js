@@ -12,6 +12,9 @@ var fs = null;
 
 var categories = null;
 
+var videoListExcludingMusic = [];
+var uncheckedRequests = 0; //goes up when requesting and down when reading
+
 
 
 var readDatabase = function(){
@@ -308,25 +311,43 @@ function excludeMusic(){
       print(err.message);
     }
 
+
+    if(videoListExcludingMusic.length > 25){
+      return;
+    }
+
+    // while(uncheckedRequests > 50){
+    //
+    // }
+
     let callback = function(response, index){
       var videos = response.items;
       if (videos.length == 0) {
         print('No video found.');
       } else {
 
-        smallVideoList[index] = "<img style=\"margin-right: 10px;\" src=\"" + videos[0].snippet.thumbnails.default.url + "\"/>" + videos[0].snippet.title + " by " + videos[0].snippet.channelTitle + "<br/>";
+        if(videoListExcludingMusic.length > 25){
+          return;
+        }
 
-        smallVideoListLoadedAmount++;
+        //TODO MAKE THIS KEEP ORDER
 
-        if(smallVideoListLoadedAmount >= 25){
-          for(var i=0;i<25;i++){
-            if(document.getElementById("videolist").innerHTML === "LOADING..."){
-              document.getElementById("videolist").innerHTML = "";
+        if(videos[0].snippet.categoryId === '10'){
+          videoListExcludingMusic.push("<img style=\"margin-right: 10px;\" src=\"" + videos[0].snippet.thumbnails.default.url + "\"/>" + videos[0].snippet.title + " by " + videos[0].snippet.channelTitle + "<br/>")
+
+          if(videoListExcludingMusic.length > 25){
+            for(var i=0;i<25;i++){
+              if(i === 0){
+                document.getElementById("videolist").innerHTML = "";
+              }
+
+              document.getElementById("videolist").innerHTML += videoListExcludingMusic[i].replace("undefined", "");
             }
-
-            document.getElementById("videolist").innerHTML += smallVideoList[i].replace("undefined", "");
           }
         }
+
+        uncheckedRequests--;
+
       }
     }
 
@@ -337,9 +358,9 @@ function excludeMusic(){
     getVideoData({
         part: 'snippet',
         id: row.vid.replace("/watch?v=", "")
-    }, callback, smallVideoListIndex);
+    }, callback, 0);
 
-    smallVideoListIndex++;
+    uncheckedRequests++;
 
   });
 }
