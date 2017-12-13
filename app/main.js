@@ -29,7 +29,7 @@ var bufferData = "";
 
 function startScrape() {
   console.log("SADsadasdsadsad");
-  command = spawn('scrapy', ['crawl', 'yth_spider']);
+  command = spawn('./Python35/Scripts/scrapy', ['crawl', 'yth_spider']);
 
   command.stdout.on('data', newScrapeMessage);
 
