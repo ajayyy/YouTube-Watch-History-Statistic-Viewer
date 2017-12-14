@@ -317,6 +317,9 @@ function excludeMusic(){
       return;
     }
 
+    document.getElementById("excludemusicbutton").innerHTML = "LOADING VIDEOS...";
+
+
     // while(uncheckedRequests > 50){
     //
     // }
@@ -334,7 +337,7 @@ function excludeMusic(){
         //TODO MAKE THIS KEEP ORDER
 
         if(videos[0].snippet.categoryId !== '10'){
-          videoListExcludingMusic.push("<img style=\"margin-right: 10px;\" src=\"" + videos[0].snippet.thumbnails.default.url + "\"/> <p style=\"display:inline-block;\">" + videos[0].snippet.title + " by " + videos[0].snippet.channelTitle + "<br/> Watched " + row.totalCount + " times " + videos[0].snippet.categoryId + "</p> <br/>")
+          videoListExcludingMusic.push("<img style=\"margin-right: 10px;\" src=\"" + videos[0].snippet.thumbnails.default.url + "\"/> <p style=\"display:inline-block;\">" + videos[0].snippet.title + " by " + videos[0].snippet.channelTitle + "<br/> Category: " + getCategoryName(videos[0].snippet.categoryId) + "<br/> Watched " + row.totalCount + " times </p> <br/>")
 
           if(videoListExcludingMusic.length > 25){
             for(var i=0;i<25;i++){
@@ -344,6 +347,8 @@ function excludeMusic(){
 
               document.getElementById("videolist").innerHTML += videoListExcludingMusic[i].replace("undefined", "");
             }
+
+            document.getElementById("excludemusicbutton").innerHTML = "<div id=\"excludemusic\" class=\"button\" onclick=\"excludeMusic()\"> Include Music </div>";
           }
         }else{
           print(videos[0].snippet.title)
