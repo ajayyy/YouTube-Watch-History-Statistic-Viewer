@@ -16,6 +16,10 @@ var videoListExcludingMusic = [];
 var amountChecked = 0;
 var tries = 0;
 
+var smallVideoList = [];
+var smallVideoListData = [];
+var smallVideoListIndex = 0;
+var smallVideoListLoadedAmount = 0;
 
 var readDatabase = function(){
 
@@ -41,11 +45,6 @@ var readDatabase = function(){
   //make contains a method
   String.prototype.contains = function(it) { return this.indexOf(it) != -1; };
 
-
-  var smallVideoList = [];
-  var smallVideoListData = [];
-  var smallVideoListIndex = 0;
-  var smallVideoListLoadedAmount = 0;
 
   var smallChannelList = [];
   var smallChannelListIndex = 0;
@@ -102,49 +101,7 @@ var readDatabase = function(){
 
     });
 
-    db.each(`SELECT vid, COUNT(title) as totalCount
-            FROM videoshistory
-            GROUP BY title
-            ORDER BY totalCount DESC
-            LIMIT 25;`, (err, row) => {
-      if (err) {
-        print(err.message);
-      }
-
-      let callback = function(response, index, row){
-        var videos = response.items;
-        if (videos.length == 0) {
-          print('No video found.');
-        } else {
-          print(videos[0].snippet.categoryId + " " + videos[0].snippet.title)
-          smallVideoList[index] = "<img style=\"margin-right: 10px;\" src=\"" + videos[0].snippet.thumbnails.default.url + "\"/> <p style=\"display:inline-block;\">" + videos[0].snippet.title + " by " + videos[0].snippet.channelTitle + "<br/> Watched " + row.totalCount + " times</p> <br/>";
-
-          smallVideoListLoadedAmount++;
-
-          if(smallVideoListLoadedAmount >= 25){
-            for(var i=0;i<25;i++){
-              if(document.getElementById("videolist").innerHTML === "LOADING..."){
-                document.getElementById("videolist").innerHTML = "";
-              }
-
-              document.getElementById("videolist").innerHTML += smallVideoList[i].replace("undefined", "");
-            }
-          }
-        }
-      }
-
-      if(row.vid.contains("&")){
-        row.vid = row.vid.substring(0, row.vid.indexOf("&"));
-      }
-
-      getVideoData({
-          part: 'snippet',
-          id: row.vid.replace("/watch?v=", "")
-      }, callback, smallVideoListIndex, row);
-
-      smallVideoListIndex++;
-
-    });
+    includeMusic();
 
     db.each(`SELECT author_id, COUNT(author_id) as totalCount
             FROM videoshistory
@@ -302,6 +259,62 @@ var readDatabase = function(){
 
 window.addEventListener("load", readDatabase);
 
+function includeMusic(){
+  document.getElementById("excludemusicbutton").innerHTML = "LOADING VIDEOS...";
+
+  db.each(`SELECT vid, COUNT(title) as totalCount
+          FROM videoshistory
+          GROUP BY title
+          ORDER BY totalCount DESC
+          LIMIT 25;`, (err, row) => {
+    if (err) {
+      print(err.message);
+    }
+
+    let callback = function(response, index, row){
+      var videos = response.items;
+      if (videos.length == 0) {
+        print('No video found.');
+      } else {
+        print(videos[0].snippet.categoryId + " " + videos[0].snippet.title)
+        smallVideoList[index] = "<img style=\"margin-right: 10px;\" src=\"" + videos[0].snippet.thumbnails.default.url + "\"/> <p style=\"display:inline-block;\">" + videos[0].snippet.title + " by " + videos[0].snippet.channelTitle + "<br/> Watched " + row.totalCount + " times</p> <br/>";
+
+        smallVideoListLoadedAmount++;
+
+        if(smallVideoListLoadedAmount >= 25){
+          for(var i=0;i<25;i++){
+            if(i == 0){
+              document.getElementById("videolist").innerHTML = "";
+            }
+
+            document.getElementById("videolist").innerHTML += smallVideoList[i].replace("undefined", "");
+          }
+
+          document.getElementById("excludemusicbutton").innerHTML = "<div id=\"excludemusic\" class=\"button\" onclick=\"excludeMusic()\"> Exclude Music </div>";
+
+          amountChecked = 0;
+          tries = 0;
+
+          videoListExcludingMusic = [];
+
+        }
+      }
+    }
+
+    if(row.vid.contains("&")){
+      row.vid = row.vid.substring(0, row.vid.indexOf("&"));
+    }
+
+    getVideoData({
+        part: 'snippet',
+        id: row.vid.replace("/watch?v=", "")
+    }, callback, smallVideoListIndex, row);
+
+    smallVideoListIndex++;
+
+  });
+}
+
 function excludeMusic(){
   db.each(`SELECT vid, COUNT(title) as totalCount
           FROM videoshistory
@@ -318,11 +331,6 @@ function excludeMusic(){
     }
 
     document.getElementById("excludemusicbutton").innerHTML = "LOADING VIDEOS...";
-
-
-    // while(uncheckedRequests > 50){
-    //
-    // }
 
     let callback = function(response, index){
       var videos = response.items;
@@ -348,7 +356,11 @@ function excludeMusic(){
               document.getElementById("videolist").innerHTML += videoListExcludingMusic[i].replace("undefined", "");
             }
 
-            document.getElementById("excludemusicbutton").innerHTML = "<div id=\"excludemusic\" class=\"button\" onclick=\"excludeMusic()\"> Include Music </div>";
+            document.getElementById("excludemusicbutton").innerHTML = "<div id=\"excludemusic\" class=\"button\" onclick=\"includeMusic()\"> Include Music </div>";
+
+            smallVideoListLoadedAmount = 0;
+            smallVideoListIndex = 0;
+
           }
         }else{
           print(videos[0].snippet.title)
