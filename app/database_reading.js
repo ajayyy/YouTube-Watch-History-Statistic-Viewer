@@ -13,8 +13,8 @@ var fs = null;
 var categories = null;
 
 var videoListExcludingMusic = [];
-var uncheckedRequests = 0; //goes up when requesting and down when reading
-
+var amountChecked = 0;
+var tries = 0;
 
 
 var readDatabase = function(){
@@ -306,7 +306,8 @@ function excludeMusic(){
   db.each(`SELECT vid, COUNT(title) as totalCount
           FROM videoshistory
           GROUP BY title
-          ORDER BY totalCount DESC;`, (err, row) => {
+          ORDER BY totalCount DESC
+          LIMIT ` + amountChecked + ', ' + (amountChecked+100) + ';', (err, row) => {
     if (err) {
       print(err.message);
     }
@@ -323,7 +324,7 @@ function excludeMusic(){
     let callback = function(response, index){
       var videos = response.items;
       if (videos.length == 0) {
-        print('No video found.');
+        print('No video found. ' + row.vid);
       } else {
 
         if(videoListExcludingMusic.length > 25){
@@ -332,8 +333,8 @@ function excludeMusic(){
 
         //TODO MAKE THIS KEEP ORDER
 
-        if(videos[0].snippet.categoryId === '10'){
-          videoListExcludingMusic.push("<img style=\"margin-right: 10px;\" src=\"" + videos[0].snippet.thumbnails.default.url + "\"/>" + videos[0].snippet.title + " by " + videos[0].snippet.channelTitle + "<br/>")
+        if(videos[0].snippet.categoryId !== '10'){
+          videoListExcludingMusic.push("<img style=\"margin-right: 10px;\" src=\"" + videos[0].snippet.thumbnails.default.url + "\"/> <p style=\"display:inline-block;\">" + videos[0].snippet.title + " by " + videos[0].snippet.channelTitle + "<br/> Watched " + row.totalCount + " times " + videos[0].snippet.categoryId + "</p> <br/>")
 
           if(videoListExcludingMusic.length > 25){
             for(var i=0;i<25;i++){
@@ -344,9 +345,18 @@ function excludeMusic(){
               document.getElementById("videolist").innerHTML += videoListExcludingMusic[i].replace("undefined", "");
             }
           }
+        }else{
+          print(videos[0].snippet.title)
+
+          if(amountChecked >= (tries + 1) * 100 - 1){
+            excludeMusic();
+            tries++;
+
+            print('Trying again...')
+          }
         }
 
-        uncheckedRequests--;
+        amountChecked++;
 
       }
     }
@@ -360,7 +370,6 @@ function excludeMusic(){
         id: row.vid.replace("/watch?v=", "")
     }, callback, 0);
 
-    uncheckedRequests++;
 
   });
 }
