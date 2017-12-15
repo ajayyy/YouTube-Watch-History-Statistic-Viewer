@@ -16,10 +16,13 @@ var videoListExcludingMusic = [];
 var amountChecked = 0;
 var tries = 0;
 
+var includesMusic = true;
+
 var smallVideoList = [];
 var smallVideoListData = [];
 var smallVideoListIndex = 0;
 var smallVideoListLoadedAmount = 0;
+var smallVideoListAmountDisplayed = 0;
 
 var readDatabase = function(){
 
@@ -259,19 +262,33 @@ var readDatabase = function(){
 
 window.addEventListener("load", readDatabase);
 
-function includeMusic(){
+function loadMore(){
+  document.getElementById("seemorebutton").innerHTML = "LOADING VIDEOS...";
+
+  if(includesMusic){
+    smallVideoListLoadedAmount = 0;
+    includeMusic(function(){
+      document.getElementById("seemorebutton").innerHTML = "<div id=\"seemore\" class=\"button\" onclick=\"loadMore()\" style=\"display:inline-block\"> Load More </div>";
+    });
+    print("loading more")
+  }
+
+}
+
+function includeMusic(callback){
   document.getElementById("excludemusicbutton").innerHTML = "LOADING VIDEOS...";
 
   db.each(`SELECT vid, COUNT(title) as totalCount
           FROM videoshistory
           GROUP BY title
           ORDER BY totalCount DESC
-          LIMIT 25;`, (err, row) => {
+          LIMIT ` + (smallVideoListAmountDisplayed) + ", " + (smallVideoListAmountDisplayed + 25) + ";", (err, row) => {
     if (err) {
       print(err.message);
     }
 
-    let callback = function(response, index, row){
+    let callback = function(response, index, row2){
+      print(row.vid)
       var videos = response.items;
       if (videos.length == 0) {
         print('No video found.');
@@ -281,9 +298,9 @@ function includeMusic(){
 
         smallVideoListLoadedAmount++;
 
-        if(smallVideoListLoadedAmount >= 25){
+        if(smallVideoListLoadedAmount == 25){
           for(var i=0;i<25;i++){
-            if(i == 0){
+            if(i == 0 && smallVideoListAmountDisplayed == 0){
               document.getElementById("videolist").innerHTML = "";
             }
 
@@ -292,10 +309,18 @@ function includeMusic(){
 
           document.getElementById("excludemusicbutton").innerHTML = "<div id=\"excludemusic\" class=\"button\" onclick=\"excludeMusic()\"> Exclude Music </div>";
 
+          smallVideoListAmountDisplayed += 25;
+          smallVideoListLoadedAmount = 0;
+          smallVideoListIndex = 0;
+          smallVideoList = [];
+
           amountChecked = 0;
           tries = 0;
-
           videoListExcludingMusic = [];
+
+          includesMusic = true;
+
+          callback();
 
         }
       }
@@ -360,6 +385,9 @@ function excludeMusic(){
 
             smallVideoListLoadedAmount = 0;
             smallVideoListIndex = 0;
+            smallVideoListAmountDisplayed = 0;
+
+            includesMusic = false;
 
           }
         }else{
@@ -416,6 +444,7 @@ function getVideoData(params, callback, index, row){
   youtube.videos.list(params, function(err, response) {
     if (err) {
       print('The API returned an error: ' + err);
+      print(params.id + " caused the error")
       return;
     }
     callback(response, index, row)
