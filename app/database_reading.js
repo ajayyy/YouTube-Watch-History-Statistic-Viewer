@@ -13,6 +13,8 @@ var fs = null;
 var categories = null;
 
 var videoListExcludingMusic = [];
+var videoListExcludingMusicOrder = []; //list of index numbers
+var videoListExcludingMusicIndex = 0;
 var amountChecked = 0;
 var tries = 0;
 
@@ -287,9 +289,12 @@ function includeMusic(callback){
       print(err.message);
     }
 
-    let callback = function(response, index, row2){
+    let callback = function(response, index, row){
+      if(row == null){
+        return
+      }
       print(row.vid)
-      var videos = response.items;
+      let videos = response.items;
       if (videos.length == 0) {
         print('No video found.');
       } else {
@@ -357,7 +362,7 @@ function excludeMusic(){
 
     document.getElementById("excludemusicbutton").innerHTML = "LOADING VIDEOS...";
 
-    let callback = function(response, index){
+    let callback = function(response, index, row){
       var videos = response.items;
       if (videos.length == 0) {
         print('No video found. ' + row.vid);
@@ -371,14 +376,20 @@ function excludeMusic(){
 
         if(videos[0].snippet.categoryId !== '10'){
           videoListExcludingMusic.push("<img style=\"margin-right: 10px;\" src=\"" + videos[0].snippet.thumbnails.default.url + "\"/> <p style=\"display:inline-block;\">" + videos[0].snippet.title + " by " + videos[0].snippet.channelTitle + "<br/> Category: " + getCategoryName(videos[0].snippet.categoryId) + "<br/> Watched " + row.totalCount + " times </p> <br/>")
+          videoListExcludingMusicOrder.push(index)
 
           if(videoListExcludingMusic.length > 25){
-            for(var i=0;i<25;i++){
+            for(let i=0;i<videoListExcludingMusicOrder.length;i++){
+              print(videoListExcludingMusicOrder[i]);
+            }
+            for(let i=0;i<25;i++){
               if(i === 0){
                 document.getElementById("videolist").innerHTML = "";
               }
 
-              document.getElementById("videolist").innerHTML += videoListExcludingMusic[i].replace("undefined", "");
+              print(videoListExcludingMusicOrder.indexOf(i) + ' ' + i + ' ' + videoListExcludingMusicOrder[i]);
+              document.getElementById("videolist").innerHTML += videoListExcludingMusic[videoListExcludingMusicOrder.indexOf(i)].replace("undefined", "");
+              // document.getElementById("videolist").innerHTML += videoListExcludingMusic[i].replace("undefined", "");
             }
 
             document.getElementById("excludemusicbutton").innerHTML = "<div id=\"excludemusic\" class=\"button\" onclick=\"includeMusic()\"> Include Music </div>";
@@ -386,6 +397,8 @@ function excludeMusic(){
             smallVideoListLoadedAmount = 0;
             smallVideoListIndex = 0;
             smallVideoListAmountDisplayed = 0;
+
+            videoListExcludingMusicIndex = 0;
 
             includesMusic = false;
 
@@ -413,8 +426,8 @@ function excludeMusic(){
     getVideoData({
         part: 'snippet',
         id: row.vid.replace("/watch?v=", "")
-    }, callback, 0);
-
+    }, callback, videoListExcludingMusicIndex, row);
+    videoListExcludingMusicIndex++;
 
   });
 }
