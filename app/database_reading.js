@@ -382,6 +382,10 @@ function excludeMusic(){
             for(let i=0;i<videoListExcludingMusicOrder.length;i++){
               print(videoListExcludingMusicOrder[i]);
             }
+            videoListExcludingMusicOrder = normaliseArray(videoListExcludingMusicOrder)
+            for(let i=0;i<videoListExcludingMusicOrder.length;i++){
+              print(videoListExcludingMusicOrder[i]);
+            }
             for(let i=0;i<25;i++){
               if(i === 0){
                 document.getElementById("videolist").innerHTML = "";
@@ -439,6 +443,29 @@ function getCategoryName(id){
       return categories.items[i].snippet.title;
     }
   }
+}
+
+function normaliseArray(array){
+  let newArray = array.slice(0);
+  let normalisedArray = array.slice(0);
+  let smallest = -1;
+
+  for(let s=0;s<array.length;s++){
+    smallest = -1;
+    for(let i=0;i<newArray.length;i++){
+      if(newArray[i] < smallest || smallest == -1){
+        smallest = newArray[i];
+        // print("set smallest to " + smallest)
+      }else{
+        // print("didnt set smallest to " + newArray[i])
+      }
+    }
+    normalisedArray[normalisedArray.indexOf(smallest)] = s;
+    newArray.splice(newArray.indexOf(smallest), 1);
+  }
+
+  return normalisedArray;
+
 }
 
 function getChannelData(params, callback, index, row){
