@@ -368,7 +368,7 @@ function excludeMusic(){
         print('No video found. ' + row.vid);
       } else {
 
-        if(videoListExcludingMusic.length > 25){
+        if(videoListExcludingMusic.length >= 25){
           return;
         }
 
@@ -378,13 +378,13 @@ function excludeMusic(){
           videoListExcludingMusic.push("<img style=\"margin-right: 10px;\" src=\"" + videos[0].snippet.thumbnails.default.url + "\"/> <p style=\"display:inline-block;\">" + videos[0].snippet.title + " by " + videos[0].snippet.channelTitle + "<br/> Category: " + getCategoryName(videos[0].snippet.categoryId) + "<br/> Watched " + row.totalCount + " times </p> <br/>")
           videoListExcludingMusicOrder.push(index)
 
-          if(videoListExcludingMusic.length > 25){
+          if(videoListExcludingMusic.length >= 25){
             for(let i=0;i<videoListExcludingMusicOrder.length;i++){
               print(videoListExcludingMusicOrder[i]);
             }
             videoListExcludingMusicOrder = normaliseArray(videoListExcludingMusicOrder)
             for(let i=0;i<videoListExcludingMusicOrder.length;i++){
-              print(videoListExcludingMusicOrder[i]);
+              print(videoListExcludingMusicOrder[i] + ' ' + videoListExcludingMusic[videoListExcludingMusicOrder.indexOf(i)]);
             }
             for(let i=0;i<25;i++){
               if(i === 0){
