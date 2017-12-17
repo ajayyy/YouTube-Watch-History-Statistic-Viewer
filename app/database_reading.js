@@ -385,18 +385,18 @@ function excludeMusic(){
             }
             videoListExcludingMusicOrder = normaliseArray(videoListExcludingMusicOrder)
             let lastTimesWatched = -1;
-            let length = videoListExcludingMusicOrder.length
-            for(let i=0;i<length-120;i++){
-              let timesWatched = videoListExcludingMusic[videoListExcludingMusicOrder.indexOf(i)].split(" Watched ")[1].split(" times")[0];
-              print(i + ' ' + timesWatched);
-              if(timesWatched > lastTimesWatched && lastTimesWatched != -1){
-                videoListExcludingMusic.splice(videoListExcludingMusicOrder.indexOf(i), 1);
-                videoListExcludingMusicOrder.splice(videoListExcludingMusicOrder.indexOf(i), 1);
-                // i--; //to make next i be the same
-              }else{
-                lastTimesWatched = timesWatched;
-              }
-            }
+            // let length = videoListExcludingMusicOrder.length
+            // for(let i=0;i<length-120;i++){
+            //   let timesWatched = videoListExcludingMusic[videoListExcludingMusicOrder.indexOf(i)].split(" Watched ")[1].split(" times")[0];
+            //   print(i + ' ' + timesWatched);
+            //   if(timesWatched > lastTimesWatched && lastTimesWatched != -1){
+            //     videoListExcludingMusic.splice(videoListExcludingMusicOrder.indexOf(i), 1);
+            //     videoListExcludingMusicOrder.splice(videoListExcludingMusicOrder.indexOf(i), 1);
+            //     // i--; //to make next i be the same
+            //   }else{
+            //     lastTimesWatched = timesWatched;
+            //   }
+            // }
             for(let i=0;i<videoListExcludingMusic.length;i++){
               if(i === 0){
                 document.getElementById("videolist").innerHTML = "";
