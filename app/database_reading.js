@@ -383,16 +383,27 @@ function excludeMusic(){
               print(videoListExcludingMusicOrder[i]);
             }
             videoListExcludingMusicOrder = normaliseArray(videoListExcludingMusicOrder)
-            for(let i=0;i<videoListExcludingMusicOrder.length;i++){
-              print(videoListExcludingMusicOrder[i] + ' ' + videoListExcludingMusic[videoListExcludingMusicOrder.indexOf(i)]);
+            let lastTimesWatched = -1;
+            for(let i=0;i<videoListExcludingMusicOrder.length-120;i++){
+              let timesWatched = videoListExcludingMusic[videoListExcludingMusicOrder.indexOf(i)].split(" Watched ")[1].split(" times")[0];
+              print(i + ' ' + timesWatched);
+              if(timesWatched > lastTimesWatched && lastTimesWatched != -1){
+                videoListExcludingMusic.splice(videoListExcludingMusicOrder.indexOf(i), 1);
+                videoListExcludingMusicOrder.splice(videoListExcludingMusicOrder.indexOf(i), 1);
+                i--; //to make next i be the same
+              }else{
+                lastTimesWatched = timesWatched;
+              }
             }
-            for(let i=0;i<25;i++){
+            for(let i=0;i<videoListExcludingMusic.length;i++){
               if(i === 0){
                 document.getElementById("videolist").innerHTML = "";
               }
 
-              print(videoListExcludingMusicOrder.indexOf(i) + ' ' + i + ' ' + videoListExcludingMusicOrder[i]);
-              document.getElementById("videolist").innerHTML += videoListExcludingMusic[videoListExcludingMusicOrder.indexOf(i)].replace("undefined", "");
+              // let timesWatched = videoListExcludingMusic[videoListExcludingMusicOrder.indexOf(i)].split(" Watched ")[1].split(" times")[0];
+              // if(timesWatched <= lastTimesWatched || lastTimesWatched == -1){ //todo remove this
+                document.getElementById("videolist").innerHTML += videoListExcludingMusic[videoListExcludingMusicOrder.indexOf(i)].replace("undefined", "");
+              // }
               // document.getElementById("videolist").innerHTML += videoListExcludingMusic[i].replace("undefined", "");
             }
 
