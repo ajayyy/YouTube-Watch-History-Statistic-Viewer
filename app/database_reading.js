@@ -281,12 +281,6 @@ function loadMore(){
 function includeMusic(callbackFunction){
   document.getElementById("excludemusicbutton").innerHTML = "LOADING VIDEOS...";
 
-  print(`SELECT vid, COUNT(title) as totalCount
-          FROM videoshistory
-          GROUP BY title
-          ORDER BY totalCount DESC
-          LIMIT ` + (smallVideoListAmountDisplayed) + ", 25 ;")
-
   db.each(`SELECT vid, COUNT(title) as totalCount
           FROM videoshistory
           GROUP BY title
@@ -300,7 +294,6 @@ function includeMusic(callbackFunction){
       if(row == null){
         return
       }
-      print(row.vid)
       let videos = response.items;
       if (videos.length == 0) {
         print('No video found.');
@@ -310,7 +303,6 @@ function includeMusic(callbackFunction){
           return;
         }
 
-        print(index + " " + videos[0].snippet.categoryId + " " + videos[0].snippet.title)
         smallVideoList[index] = "<img style=\"margin-right: 10px;\" src=\"" + videos[0].snippet.thumbnails.default.url + "\"/> <p style=\"display:inline-block;\">" + videos[0].snippet.title + " by " + videos[0].snippet.channelTitle + "<br/> Watched " + row.totalCount + " times</p> <br/>";
 
         smallVideoListLoadedAmount++;
@@ -354,7 +346,6 @@ function includeMusic(callbackFunction){
     }, callback, smallVideoListIndex, row);
 
     smallVideoListIndex++;
-    print("small video list index: " + smallVideoListIndex + " and the start number: " + smallVideoListAmountDisplayed);
 
   });
 }
