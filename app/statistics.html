@@ -65,14 +65,22 @@
 
     <br/>
 
-    <div id="videolist" class="list" style="display:inline-block">LOADING...</div>
+    <div class="list" style="display:inline-block">
+      <div id="videolist" class="list" style="display:inline-block">LOADING...</div>
+    </div>
 
-    <div style="display:inline-block; position: absolute; right: 10px;"> <div id="channellist" class="list" style="display:inline-block">LOADING...</div> </div>
+    <div style="display:inline-block; position: absolute; right: 10px;">
+      <div id="channellist" class="list" style="display:inline-block">LOADING...</div>
 
+      <div class="bob" id="seemorechannelsbutton" style="display:inline-block; position: absolute; right: 10px;">
+        <div id="seemorechannels" class="button" onclick="loadChannels()" style="display:inline-block;" > Load More </div>
+      <div>
+    </div>
 
-    <div class="bob" id="seemorebutton">
-      <div id="seemore" class="button" onclick="loadMore()" style="display:inline-block"> Load More </div>
+    <div class="bob" id="seemorebutton" style="float: left;">
+      <div id="seemore" class="button" onclick="loadMore()" style="float: left;"> Load More </div>
     <div>
+
 
   </div>
 

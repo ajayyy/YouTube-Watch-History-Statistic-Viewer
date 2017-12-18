@@ -28,6 +28,11 @@ var smallVideoListIndex = 0;
 var smallVideoListLoadedAmount = 0;
 var smallVideoListAmountDisplayed = 0;
 
+var smallChannelList = [];
+var smallChannelListIndex = 0;
+var smallChannelListLoadedAmount = 0;
+var smallChannelListAmountDisplayed = 0;
+
 var readDatabase = function(){
 
   fs = remote.require('fs');
@@ -51,11 +56,6 @@ var readDatabase = function(){
   print = remote.getGlobal("print");
   //make contains a method
   String.prototype.contains = function(it) { return this.indexOf(it) != -1; };
-
-
-  var smallChannelList = [];
-  var smallChannelListIndex = 0;
-  var smallChannelListLoadedAmount = 0;
 
   var categoryList = [];
 
@@ -145,56 +145,7 @@ var readDatabase = function(){
 
     });
 
-    db.each(`SELECT author_id, COUNT(author_id) as totalCount
-            FROM videoshistory
-            GROUP BY author_id
-            ORDER BY totalCount DESC
-            LIMIT 25;`, (err, row) => {
-      if (err) {
-        print(err.message);
-      }
-      print(row.title)
-      document.getElementById("topchannel").innerHTML = row.author_id;
-      // row.author_id = "/user/enyay";
-
-      let callback = function(response, index, row){
-        var channel = response.items;
-        if (channel.length == 0) {
-          print('No channel found.');
-        } else {
-
-          smallChannelList[index] = "<img style=\"margin-right: 10px;\" src=\"" + channel[0].snippet.thumbnails.default.url + "\"/> <p style=\"display:inline-block;\">" + channel[0].snippet.title + "<br/> Watched " + row.totalCount + " videos </p> <br/>";
-
-          smallChannelListLoadedAmount++;
-
-          if(smallChannelListLoadedAmount >= 25){
-            for(var i=0;i<25;i++){
-              if(document.getElementById("channellist").innerHTML === "LOADING..."){
-                document.getElementById("channellist").innerHTML = "";
-              }
-
-              document.getElementById("channellist").innerHTML += smallChannelList[i].replace("undefined", "");
-            }
-          }
-
-        }
-      }
-
-      if(row.author_id.contains("/user/")){
-        getChannelData({
-            part: 'snippet',
-            forUsername: row.author_id.replace("/user/", "")
-        }, callback, smallChannelListIndex, row);
-      }else{ //must be channel id
-        getChannelData({
-            part: 'snippet',
-            id: row.author_id.replace("/channel/", "")
-        }, callback, smallChannelListIndex, row);
-      }
-
-      smallChannelListIndex++;
-
-    });
+    loadChannels()
 
     db.each(`SELECT author_id, COUNT(author_id) as totalCount
             FROM videoshistory
@@ -265,6 +216,69 @@ var readDatabase = function(){
 }
 
 window.addEventListener("load", readDatabase);
+
+function loadChannels(){
+  document.getElementById("seemorechannelsbutton").innerHTML = "LOADING CHANNELS...";
+  smallChannelListLoadedAmount = 0;
+  smallChannelListIndex = 0;
+  smallChannelList = [];
+
+  db.each(`SELECT author_id, COUNT(author_id) as totalCount
+          FROM videoshistory
+          GROUP BY author_id
+          ORDER BY totalCount DESC
+          LIMIT ` + smallChannelListAmountDisplayed + `, 25;`, (err, row) => {
+    if (err) {
+      print(err.message);
+    }
+    // row.author_id = "/user/enyay";
+
+    let callback = function(response, index, row){
+      var channel = response.items;
+      if (channel.length == 0) {
+        print('No channel found.');
+      } else {
+
+        smallChannelList[index] = "<img style=\"margin-right: 10px;\" src=\"" + channel[0].snippet.thumbnails.default.url + "\"/> <p style=\"display:inline-block;\">" + channel[0].snippet.title + "<br/> Watched " + row.totalCount + " videos </p> <br/>";
+
+        smallChannelListLoadedAmount++;
+
+        print(index + " " + smallChannelListAmountDisplayed);
+
+        if(smallChannelListLoadedAmount == 25){
+          for(var i=0;i<smallChannelList.length;i++){
+            if(i == 0 && smallChannelListAmountDisplayed == 0){
+              document.getElementById("channellist").innerHTML = "";
+            }
+
+            document.getElementById("channellist").innerHTML += smallChannelList[i].replace("undefined", "");
+          }
+
+          smallChannelListAmountDisplayed += 25;
+
+          document.getElementById("seemorechannelsbutton").innerHTML = "<div id=\"seemorechannels\" class=\"button\" onclick=\"loadChannels()\" style=\"display:inline-block\"> Load More </div>";
+
+        }
+
+      }
+    }
+
+    if(row.author_id.contains("/user/")){
+      getChannelData({
+          part: 'snippet',
+          forUsername: row.author_id.replace("/user/", "")
+      }, callback, smallChannelListIndex, row);
+    }else{ //must be channel id
+      getChannelData({
+          part: 'snippet',
+          id: row.author_id.replace("/channel/", "")
+      }, callback, smallChannelListIndex, row);
+    }
+
+    smallChannelListIndex++;
+
+  });
+}
 
 function loadMore(){
   document.getElementById("seemorebutton").innerHTML = "LOADING VIDEOS...";
