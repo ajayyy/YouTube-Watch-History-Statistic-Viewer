@@ -16,6 +16,7 @@ var videoListExcludingMusic = [];
 var videoListExcludingMusicOrder = []; //list of index numbers
 var videoListExcludingMusicIndex = 0;
 var videoListExcludingMusicIncreaseAmount = 100;
+var videoListExcludingMusicAmountDisplayed = 0;
 var amountChecked = 0;
 var tries = 0;
 
@@ -268,13 +269,18 @@ window.addEventListener("load", readDatabase);
 function loadMore(){
   document.getElementById("seemorebutton").innerHTML = "LOADING VIDEOS...";
 
+  let callbackFunction = function() {
+    document.getElementById("seemorebutton").innerHTML = "<div id=\"seemore\" class=\"button\" onclick=\"loadMore()\" style=\"display:inline-block\"> Load More </div>";
+  };
+
   if(includesMusic){
     smallVideoListLoadedAmount = 0;
-    let callbackFunction = function() {
-      document.getElementById("seemorebutton").innerHTML = "<div id=\"seemore\" class=\"button\" onclick=\"loadMore()\" style=\"display:inline-block\"> Load More </div>";
-    };
     includeMusic(callbackFunction);
     print("loading more")
+  }else{
+    videoListExcludingMusic = []
+    videoListExcludingMusicOrder = []
+    excludeMusic(callbackFunction)
   }
 
 }
@@ -324,6 +330,7 @@ function includeMusic(callbackFunction){
           smallVideoListLoadedAmount = 0;
           smallVideoListIndex = 0;
           smallVideoList = [];
+          videoListExcludingMusicAmountDisplayed = 0;
 
           amountChecked = 0;
           tries = 0;
@@ -351,12 +358,12 @@ function includeMusic(callbackFunction){
   });
 }
 
-function excludeMusic(){
+function excludeMusic(callbackFunction){
   db.each(`SELECT vid, COUNT(title) as totalCount
           FROM videoshistory
           GROUP BY title
           ORDER BY totalCount DESC
-          LIMIT ` + amountChecked + ', ' + videoListExcludingMusicIncreaseAmount + ' ;', (err, row) => {
+          LIMIT ` + (amountChecked + videoListExcludingMusicAmountDisplayed) + ', ' + videoListExcludingMusicIncreaseAmount + ' ;', (err, row) => {
     if (err) {
       print(err.message);
     }
@@ -402,7 +409,7 @@ function excludeMusic(){
             //   }
             // }
             for(let i=0;i<videoListExcludingMusic.length;i++){
-              if(i === 0){
+              if(i === 0 && videoListExcludingMusicAmountDisplayed == 0){
                 document.getElementById("videolist").innerHTML = "";
               }
 
@@ -421,7 +428,11 @@ function excludeMusic(){
 
             videoListExcludingMusicIndex = 0;
 
+            videoListExcludingMusicAmountDisplayed += 25;
+
             includesMusic = false;
+
+            if(callbackFunction != null) callbackFunction();
 
           }
         }else{
