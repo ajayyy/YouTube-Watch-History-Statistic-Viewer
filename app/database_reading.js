@@ -15,6 +15,7 @@ var categories = null;
 var videoListExcludingMusic = [];
 var videoListExcludingMusicOrder = []; //list of index numbers
 var videoListExcludingMusicIndex = 0;
+var videoListExcludingMusicIncreaseAmount = 100;
 var amountChecked = 0;
 var tries = 0;
 
@@ -355,7 +356,7 @@ function excludeMusic(){
           FROM videoshistory
           GROUP BY title
           ORDER BY totalCount DESC
-          LIMIT ` + amountChecked + ', ' + (amountChecked+100) + ';', (err, row) => {
+          LIMIT ` + amountChecked + ', ' + videoListExcludingMusicIncreaseAmount + ' ;', (err, row) => {
     if (err) {
       print(err.message);
     }
@@ -376,8 +377,6 @@ function excludeMusic(){
         if(videoListExcludingMusic.length >= 25){
           return;
         }
-
-        //TODO MAKE THIS KEEP ORDER
 
         if(videos[0].snippet.categoryId !== '10'){
           videoListExcludingMusic.push("<img style=\"margin-right: 10px;\" src=\"" + videos[0].snippet.thumbnails.default.url + "\"/> <p style=\"display:inline-block;\">" + videos[0].snippet.title + " by " + videos[0].snippet.channelTitle + "<br/> Category: " + getCategoryName(videos[0].snippet.categoryId) + "<br/> Watched " + row.totalCount + " times </p> <br/>")
@@ -428,7 +427,10 @@ function excludeMusic(){
         }else{
           print(videos[0].snippet.title)
 
-          if(amountChecked >= (tries + 1) * 100 - 1){
+          if(amountChecked >= (tries + 1) * videoListExcludingMusicIncreaseAmount - 1){ //the amount it goes by is needed here too
+
+            // videoListExcludingMusicIncreaseAmount = 25 - videoListExcludingMusic.length;
+
             excludeMusic();
             tries++;
 
