@@ -269,22 +269,29 @@ function loadMore(){
 
   if(includesMusic){
     smallVideoListLoadedAmount = 0;
-    includeMusic(function(){
+    let callbackFunction = function() {
       document.getElementById("seemorebutton").innerHTML = "<div id=\"seemore\" class=\"button\" onclick=\"loadMore()\" style=\"display:inline-block\"> Load More </div>";
-    });
+    };
+    includeMusic(callbackFunction);
     print("loading more")
   }
 
 }
 
-function includeMusic(callback){
+function includeMusic(callbackFunction){
   document.getElementById("excludemusicbutton").innerHTML = "LOADING VIDEOS...";
+
+  print(`SELECT vid, COUNT(title) as totalCount
+          FROM videoshistory
+          GROUP BY title
+          ORDER BY totalCount DESC
+          LIMIT ` + (smallVideoListAmountDisplayed) + ", 25 ;")
 
   db.each(`SELECT vid, COUNT(title) as totalCount
           FROM videoshistory
           GROUP BY title
           ORDER BY totalCount DESC
-          LIMIT ` + (smallVideoListAmountDisplayed) + ", " + (smallVideoListAmountDisplayed + 25) + ";", (err, row) => {
+          LIMIT ` + (smallVideoListAmountDisplayed) + ", 25 ;", (err, row) => {
     if (err) {
       print(err.message);
     }
@@ -298,13 +305,19 @@ function includeMusic(callback){
       if (videos.length == 0) {
         print('No video found.');
       } else {
-        print(videos[0].snippet.categoryId + " " + videos[0].snippet.title)
+
+        if(smallVideoListLoadedAmount > 25){
+          return;
+        }
+
+        print(index + " " + videos[0].snippet.categoryId + " " + videos[0].snippet.title)
         smallVideoList[index] = "<img style=\"margin-right: 10px;\" src=\"" + videos[0].snippet.thumbnails.default.url + "\"/> <p style=\"display:inline-block;\">" + videos[0].snippet.title + " by " + videos[0].snippet.channelTitle + "<br/> Watched " + row.totalCount + " times</p> <br/>";
 
         smallVideoListLoadedAmount++;
 
         if(smallVideoListLoadedAmount == 25){
-          for(var i=0;i<25;i++){
+          smallVideoListLoadedAmount++;
+          for(var i=0;i<smallVideoList.length;i++){
             if(i == 0 && smallVideoListAmountDisplayed == 0){
               document.getElementById("videolist").innerHTML = "";
             }
@@ -325,7 +338,7 @@ function includeMusic(callback){
 
           includesMusic = true;
 
-          callback();
+          if(callbackFunction != null) callbackFunction();
 
         }
       }
@@ -341,6 +354,7 @@ function includeMusic(callback){
     }, callback, smallVideoListIndex, row);
 
     smallVideoListIndex++;
+    print("small video list index: " + smallVideoListIndex + " and the start number: " + smallVideoListAmountDisplayed);
 
   });
 }
