@@ -110,43 +110,11 @@ var readDatabase = function(){
 
     includeMusic();
 
-    db.each(`SELECT author_id, COUNT(author_id) as totalCount
-            FROM videoshistory
-            GROUP BY author_id
-            ORDER BY totalCount DESC
-            LIMIT 1;`, (err, row) => {
-      if (err) {
-        print(err.message);
-      }
-      print(row.title)
-      document.getElementById("topchannel").innerHTML = row.author_id;
-      row.author_id = "/user/enyay";
+    topChannel();
 
-      let callback = function(response, index, row){
-        var channel = response.items;
-        if (channel.length == 0) {
-          print('No channel found.');
-        } else {
-          document.getElementById("topchannel").innerHTML = "<img style=\"margin-right: 10px;\" src=\"" + channel[0].snippet.thumbnails.default.url + "\"/> <p style=\"display:inline-block;\">" + channel[0].snippet.title + "<br/> Watched " + row.totalCount + " videos </p>";
-        }
-      }
+    loadChannels();
 
-      if(row.author_id.contains("/user/")){
-        getChannelData({
-            part: 'snippet',
-            forUsername: row.author_id.replace("/user/", "")
-        }, callback, 0, row);
-      }else{ //must be channel id
-        getChannelData({
-            part: 'snippet',
-            id: row.author_id.replace("/channel/", "")
-        }, callback, 0, row);
-      }
-
-    });
-
-    loadChannels()
-
+    //Top Categories
     db.each(`SELECT author_id, COUNT(author_id) as totalCount
             FROM videoshistory
             GROUP BY author_id
@@ -175,6 +143,8 @@ var readDatabase = function(){
 
               if(categoryList.length >= 7){
                 //done adding them all
+
+                //remove duplicates
                 categoryList = categoryList.filter( function( item, index, inputArray ) {
                     return inputArray.indexOf(item) == index;
                 });
@@ -217,6 +187,80 @@ var readDatabase = function(){
 
 window.addEventListener("load", readDatabase);
 
+function topNonMusicChannel(){ //TODO Only trigger this when the top channel is a music channel
+  db.each(`SELECT author_id, COUNT(author_id) as totalCount
+          FROM videoshistory
+          GROUP BY author_id
+          ORDER BY totalCount DESC
+          LIMIT 1;`, (err, row) => {
+    if (err) {
+      print(err.message);
+    }
+    print(row.title)
+    document.getElementById("topchannel").innerHTML = row.author_id;
+    row.author_id = "/user/enyay";
+
+    let callback = function(response, index, row){
+      var channel = response.items;
+      if (channel.length == 0) {
+        print('No channel found.');
+      } else {
+        document.getElementById("topchannel").innerHTML = "<img style=\"margin-right: 10px;\" src=\"" + channel[0].snippet.thumbnails.default.url + "\"/> <p style=\"display:inline-block;\">" + channel[0].snippet.title + "<br/> Watched " + row.totalCount + " videos </p>";
+      }
+    }
+
+    if(row.author_id.contains("/user/")){
+      getChannelData({
+          part: 'snippet',
+          forUsername: row.author_id.replace("/user/", "")
+      }, callback, 0, row);
+    }else{ //must be channel id
+      getChannelData({
+          part: 'snippet',
+          id: row.author_id.replace("/channel/", "")
+      }, callback, 0, row);
+    }
+
+  });
+}
+
+function topChannel(){
+  db.each(`SELECT author_id, COUNT(author_id) as totalCount
+          FROM videoshistory
+          GROUP BY author_id
+          ORDER BY totalCount DESC
+          LIMIT 1;`, (err, row) => {
+    if (err) {
+      print(err.message);
+    }
+    print(row.title)
+    document.getElementById("topchannel").innerHTML = row.author_id;
+    row.author_id = "/user/enyay";
+
+    let callback = function(response, index, row){
+      var channel = response.items;
+      if (channel.length == 0) {
+        print('No channel found.');
+      } else {
+        document.getElementById("topchannel").innerHTML = "<img style=\"margin-right: 10px;\" src=\"" + channel[0].snippet.thumbnails.default.url + "\"/> <p style=\"display:inline-block;\">" + channel[0].snippet.title + "<br/> Watched " + row.totalCount + " videos </p>";
+      }
+    }
+
+    if(row.author_id.contains("/user/")){
+      getChannelData({
+          part: 'snippet',
+          forUsername: row.author_id.replace("/user/", "")
+      }, callback, 0, row);
+    }else{ //must be channel id
+      getChannelData({
+          part: 'snippet',
+          id: row.author_id.replace("/channel/", "")
+      }, callback, 0, row);
+    }
+
+  });
+}
+
 function loadChannels(){
   document.getElementById("seemorechannelsbutton").innerHTML = "LOADING CHANNELS...";
   smallChannelListLoadedAmount = 0;
@@ -256,7 +300,7 @@ function loadChannels(){
 
           smallChannelListAmountDisplayed += 25;
 
-          document.getElementById("seemorechannelsbutton").innerHTML = "<div id=\"seemorechannels\" class=\"button\" onclick=\"loadChannels()\" style=\"display:inline-block\"> Load More </div>";
+          document.getElementById("seemorechannelsbutton").innerHTML = "<div id=\"seemorechannels\" class=\"button\" onclick=\"loadChannels()\" > Load More </div>";
 
         }
 
@@ -284,7 +328,7 @@ function loadMore(){
   document.getElementById("seemorebutton").innerHTML = "LOADING VIDEOS...";
 
   let callbackFunction = function() {
-    document.getElementById("seemorebutton").innerHTML = "<div id=\"seemore\" class=\"button\" onclick=\"loadMore()\" style=\"display:inline-block\"> Load More </div>";
+    document.getElementById("seemorebutton").innerHTML = "<div id=\"seemore\" class=\"button\" onclick=\"loadMore()\" > Load More </div>";
   };
 
   if(includesMusic){
