@@ -222,26 +222,30 @@ function topNonMusicChannel(){ //TODO Only trigger this when the top channel is 
               topNonMusicChannelTries ++;
               topNonMusicChannel();
             }else{
-              let callback2 = function(response, index, row){
-                var channel = response.items;
-                if (channel.length == 0) {
-                  print('No channel found.');
-                } else {
-
-                  document.getElementById("topchannelnonmusic").innerHTML = "<img style=\"margin-right: 10px;\" src=\"" + channel[0].snippet.thumbnails.default.url + "\"/> <p style=\"display:inline-block;\">" + channel[0].snippet.title + "<br/> Watched " + row.totalCount + " videos </p>";
+              if(topNonMusicChannelTries == 0){
+                document.getElementById("topchannelnonmusiclabel").innerHTML = "";
+                document.getElementById("topchannelnonmusic").innerHTML = "";
+              }else{
+                let callback2 = function(response, index, row){
+                  var channel = response.items;
+                  if (channel.length == 0) {
+                    print('No channel found.');
+                  } else {
+                    document.getElementById("topchannelnonmusic").innerHTML = "<img style=\"margin-right: 10px;\" src=\"" + channel[0].snippet.thumbnails.default.url + "\"/> <p style=\"display:inline-block;\">" + channel[0].snippet.title + "<br/> Watched " + row.totalCount + " videos </p>";
+                  }
                 }
-              }
 
-              if(row.author_id.contains("/user/")){
-                getChannelData({
-                    part: 'snippet',
-                    forUsername: row.author_id.replace("/user/", "")
-                }, callback2, 0, row);
-              }else{ //must be channel id
-                getChannelData({
-                    part: 'snippet',
-                    id: row.author_id.replace("/channel/", "")
-                }, callback2, 0, row);
+                if(row.author_id.contains("/user/")){
+                  getChannelData({
+                      part: 'snippet',
+                      forUsername: row.author_id.replace("/user/", "")
+                  }, callback2, 0, row);
+                }else{ //must be channel id
+                  getChannelData({
+                      part: 'snippet',
+                      id: row.author_id.replace("/channel/", "")
+                  }, callback2, 0, row);
+                }
               }
             }
           }
