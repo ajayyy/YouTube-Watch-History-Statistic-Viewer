@@ -11,10 +11,12 @@
     "util.promisify": "^1.0.0"
   },
   "devDependencies": {
+    "electron-builder": "^19.49.0",
     "electron-prebuilt": "^1.4.13"
   },
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "postinstall": "install-app-deps"
   },
   "author": "",
   "license": "ISC"

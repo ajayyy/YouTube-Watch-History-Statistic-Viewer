@@ -10,7 +10,9 @@ var mainWindow = null
 const util = require('util');
 require('util.promisify').shim();
 
-process.chdir('./Youtube-Watch-History-Scraper-master/');
+process.chdir(__dirname)
+
+process.chdir('../Youtube-Watch-History-Scraper-master/');
 
 const { spawn, exec } = require('child_process');
 const readline = require('readline');
