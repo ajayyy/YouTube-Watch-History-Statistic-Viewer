@@ -109,6 +109,21 @@ textarea {
   animation-duration: 0.5s;
 }
 
+.grow {
+
+  outline: 1px solid transparent;
+
+  transform: scale(1);
+  animation-name: shrink;
+  animation-duration: 0.5s;
+}
+
+.grow:hover {
+  animation-name: grow;
+  animation-duration: 0.5s;
+  transform: scale(1.25);
+}
+
 .bob {
   animation-name: bobing;
   animation-duration: 7s;
