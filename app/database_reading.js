@@ -39,11 +39,6 @@ var readDatabase = function(){
 
   fs = remote.require('fs');
 
-  //delete YouTube cookies for security purposes
-  fs.writeFile("./youtube_cookies.json", "", function(err) {
-    
-  });
-
   fs.readFile('../app/youtube_categories.json', function processClientSecrets(err, content) {
     if (err) {
       print(err);
