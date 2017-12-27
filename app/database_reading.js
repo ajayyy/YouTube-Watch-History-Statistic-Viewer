@@ -41,7 +41,7 @@ var readDatabase = function(){
 
   //delete YouTube cookies for security purposes
   fs.writeFile("./youtube_cookies.json", "", function(err) {
-    
+
   });
 
   fs.readFile('../app/youtube_categories.json', function processClientSecrets(err, content) {
@@ -80,7 +80,6 @@ var readDatabase = function(){
       if (err) {
         print(err.message);
       }
-      print(row.title)
       document.getElementById("vidAmount").innerHTML = row.totalCount;
     });
 
@@ -92,7 +91,6 @@ var readDatabase = function(){
       if (err) {
         print(err.message);
       }
-      print(row.title)
       document.getElementById("topvideo").innerHTML = row.title + " by " + row.author_id;
 
       let callback = function(response, index, row){
@@ -274,7 +272,6 @@ function topChannel(){
     if (err) {
       print(err.message);
     }
-    print(row.title)
     document.getElementById("topchannel").innerHTML = row.author_id;
     // row.author_id = "/user/enyay";
 
