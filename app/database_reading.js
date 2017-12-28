@@ -39,6 +39,13 @@ var readDatabase = function(){
 
   fs = remote.require('fs');
 
+  //delete .db-journal file if it exists
+  fs.exists("./youtube_history.db-journal",function(exists){
+    if(exists){
+      fs.unlink('./youtube_history.db-journal');
+    }
+  });
+
   //delete YouTube cookies for security purposes
   fs.writeFile("./youtube_cookies.json", "", function(err) {
 
