@@ -11,9 +11,9 @@
     function copyFiles(filePaths){
       var fs = require('fs-extra');
 
-      fs.copySync(filePaths[0], 'youtube_history.db');
+      fs.copy(filePaths[0], 'youtube_history.db');
 
-      // fs.createReadStream(filePaths[0]).pipe(fs.createWriteStream('./youtube_history.db'));
+      remote.getGlobal("startStatisticsView")();
     }
 
     function loadWatchHistory(){
