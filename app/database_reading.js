@@ -39,6 +39,25 @@ var readDatabase = function(){
 
   fs = remote.require('fs');
 
+  function fsExistsSync(myDir) {
+    try {
+      fs.accessSync(myDir);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  //delete .db-journal file if it exists
+  if (fsExistsSync('./youtube_history.db-journal')) {
+    fs.unlinkSync('./youtube_history.db-journal');
+  }
+
+  //delete YouTube cookies for security purposes
+  fs.writeFile("./youtube_cookies.json", "", function(err) {
+
+  });
+
   fs.readFile('../app/youtube_categories.json', function processClientSecrets(err, content) {
     if (err) {
       print(err);
@@ -75,7 +94,6 @@ var readDatabase = function(){
       if (err) {
         print(err.message);
       }
-      print(row.title)
       document.getElementById("vidAmount").innerHTML = row.totalCount;
     });
 
@@ -87,7 +105,6 @@ var readDatabase = function(){
       if (err) {
         print(err.message);
       }
-      print(row.title)
       document.getElementById("topvideo").innerHTML = row.title + " by " + row.author_id;
 
       let callback = function(response, index, row){
@@ -269,7 +286,6 @@ function topChannel(){
     if (err) {
       print(err.message);
     }
-    print(row.title)
     document.getElementById("topchannel").innerHTML = row.author_id;
     // row.author_id = "/user/enyay";
 
@@ -404,7 +420,7 @@ function includeMusic(callbackFunction){
           return;
         }
 
-        smallVideoList[index] = "<img style=\"margin-right: 10px;\" src=\"" + videos[0].snippet.thumbnails.default.url + "\"/> <p style=\"display:inline-block;\">" + videos[0].snippet.title + " by " + videos[0].snippet.channelTitle + "<br/> Watched " + row.totalCount + " times</p> <br/>";
+        smallVideoList[index] = "<img style=\"margin-right: 10px;\" src=\"" + videos[0].snippet.thumbnails.default.url + "\"/> <p style=\"display:inline-block;\">" + videos[0].snippet.title + " by " + videos[0].snippet.channelTitle + "<br/> Category: " + getCategoryName(videos[0].snippet.categoryId) + "<br/> Watched " + row.totalCount +  " times</p> <br/>";
 
         smallVideoListLoadedAmount++;
 

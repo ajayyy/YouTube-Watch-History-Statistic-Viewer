@@ -74,6 +74,17 @@ textarea {
   font-size: 20px;
 }
 
+#savehistory {
+  width: 350px;
+  color: black;
+  text-decoration: none;
+  font-size: 25px;
+}
+
+#loadwatchhistory {
+  width: 430px;
+}
+
 .button {
   background: #325eb4;
   border-radius: 90px 90px 90px 90px;
