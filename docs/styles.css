@@ -6,6 +6,11 @@ body {
   background: linear-gradient(#39bff1, #237390);
 }
 
+img {
+  max-width: 100%;
+  height: auto;
+}
+
 *:not(div) {
   /*animation-name: backgroundAnimation;
   animation-duration: 3s;
