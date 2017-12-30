@@ -21,15 +21,6 @@ var command = null;
 //make contains a method
 String.prototype.contains = function(it) { return this.indexOf(it) != -1; };
 
-global.fixScrapyExe = function(){
-  let data = fs.readFileSync('./Python35/Scripts/scrapy.exe');
-  let content = data.toString();
-  let oldPath = content.split('#!"')[1].split('"')[0];
-  content = content.replace(oldPath, __dirname.replace('\\app', '\\') + 'Youtube-Watch-History-Scraper-master\\Python35\\python.exe');
-  console.log(content);
-  fs.writeFileSync('./Python35/Scripts/scrapy.exe', content);
-}
-
 var videosDownloaded = 0;
 
 global.videosDownloaded = function() {
