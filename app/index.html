@@ -8,6 +8,9 @@
     let {remote} = require('electron');
     const start = remote.getGlobal("start");
 
+    //fix scrapy.exec
+    // remote.getGlobal('fixScrapyExe')();
+
     function copyFiles(filePaths){
       var fs = require('fs-extra');
 
