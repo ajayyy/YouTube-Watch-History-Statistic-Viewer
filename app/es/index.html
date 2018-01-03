@@ -1,0 +1,56 @@
+
+<head>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+  <link href="SourceSansPro-Regular.ttf" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Ranchers" rel="stylesheet">
+
+  <script type="text/javascript">
+    let {remote} = require('electron');
+    const start = remote.getGlobal("start");
+
+    //fix scrapy.exec
+    // remote.getGlobal('fixScrapyExe')();
+
+    function copyFiles(filePaths){
+      var fs = require('fs-extra');
+
+      fs.copySync(filePaths[0], 'youtube_history.db');
+
+      remote.getGlobal("startStatisticsView")();
+    }
+
+    function loadWatchHistory(){
+      //Loads the watch history from a db file then opens the stats pane (skips downloading)
+      //really just moves the file to the Youtube Scraper folder
+      remote.dialog.showOpenDialog({
+        'title': 'Choose the "youtube_history.db" file that you saved from using this last (You may have renamed this file when saving)',
+        'buttonLabel': 'Open YouTube History Database File',
+        properties: ['openFile'],
+        filters: [
+          {name: 'YouTube History Database File', extensions: ['db']},
+        ]
+      }, copyFiles);
+    }
+  </script>
+</head>
+
+<body>
+
+  <center>
+    <h1 class="title">Welcome to the "2017 Wrapped" Statistics Viewer for YouTube</h1>
+
+    <div class="bob" > <div class="button" onclick="start()"> Let's Go! </div> </div>
+
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+
+    <div class="bob" > <div id="loadwatchhistory" class="button" onclick="loadWatchHistory()"> Load Already Downloaded Watch History </div> </div>
+
+  </center>
+
+
+</body>
