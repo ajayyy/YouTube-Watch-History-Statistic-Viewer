@@ -1,0 +1,81 @@
+
+<head>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+  <link href="SourceSansPro-Regular.ttf" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Ranchers" rel="stylesheet">
+
+  <script type="text/javascript">
+  console.log(document.getElementsByClassName("title").innerHTML + " s");
+    let {remote} = require('electron');
+    const fs = remote.require('fs');
+    const url = remote.require('url');
+    const path = remote.require('path');
+
+
+    var doneCookies = false; //done submitting cookies
+
+    function scrape(){
+      if(doneCookies) return;
+      doneCookies = true;
+
+      fs.writeFile("./youtube_cookies.json", document.getElementById("cookies").value, function(err) {
+        console.log("The file was saved!");
+        remote.getGlobal('scrape')();
+      });
+
+    }
+  </script>
+</head>
+
+<body>
+
+  <center>
+
+    <div class="bob">Please paste the cookie here</div>
+    <br/>
+
+    <textarea id="cookies" type="text" > </textarea>
+
+    <br/>
+    <br/>
+
+    <div class="bob" onclick="scrape()"> <div class="button" onclick="scrape()"> Submit! </div> </div>
+
+    <h1 class="title">What is this?</h1>
+
+    <div id="explination" class="bob">Because of limitations in the Youtube API, the only way to get all of the watch history is by scraping it manually, so this requires the "cookie" stored in your browser that allows you to access YouTube</div>
+
+    <br/>
+
+    <div id="explination" class="bob">
+
+      To get the access key please download <a href="https://chrome.google.com/webstore/detail/edit-this-cookie/fngmhnnpilhplaeedifhccceomclgfbg" target="_blank"> EditThisCookie </a>
+
+      <br/>
+      <br/>
+
+      <img src="installExtention.PNG"/>
+
+      <br/>
+      <br/>
+
+      Then go to <a href="https://youtube.com" target="_blank">YouTube.com</a> and click on the Edit This Cookie button in your top bar, and hit the <img src="export.png"/> button.
+
+      <br/>
+      <br/>
+
+
+      <img src="exportData.png"/>
+
+      <br/>
+
+      This will copy the data to your clipboard, paste that into the box above.
+
+
+    </div>
+
+
+  </center>
+
+
+</body>
