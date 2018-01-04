@@ -2,7 +2,7 @@
 
 ![Image](https://github.com/ajayyy/YouTube-Watch-History-Statistic-Viewer/blob/extra-features/icon.png?raw=true)
 
-Logo by [ady-was-here](https://busy.org/utopian-io/@ady-was-here/youtube-watch-history-statistics-viewer-logo)
+Logo by [cklai](https://busy.org/utopian-io/@cklai/logo-design-for-youtube-watch-history-statistic-viewer)
 
 This is a program based on 2017Wrapped.com that reads your YouTube Watch History and shows your most watched videos, channels, and categories.
 
