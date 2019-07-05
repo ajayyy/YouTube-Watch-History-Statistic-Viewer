@@ -97,7 +97,7 @@ var readDatabase = function(){
       document.getElementById("vidAmount").innerHTML = row.totalCount;
     });
 
-    db.each(`SELECT vid, COUNT(title) as totalCount
+    db.each(`SELECT vid, COUNT(title) as totalCount, title, author_id
             FROM videoshistory
             GROUP BY title
             ORDER BY totalCount DESC
