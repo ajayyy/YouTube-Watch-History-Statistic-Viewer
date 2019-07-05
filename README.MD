@@ -14,6 +14,10 @@ This is a program based on 2017Wrapped.com that reads your YouTube Watch History
 
 [Download](https://github.com/ajayyy/YouTube-Watch-History-Statistic-Viewer/releases) the zip and extract it. Then run the .exe file and follow instructions in the program.
 
+# Google API Key
+
+After 90 days of inactivity, Google disables the Youtube v3 API key. When you use this program, the API key will probably be disabled. You can create your own at on the [Google Cloud Console](https://console.cloud.google.com/apis/api). Put the API key into `/resources/app/app/database_reading.js`.
+
 # Credit
 
 Youtube History scraping done using https://github.com/zvodd/Youtube-Watch-History-Scraper .
